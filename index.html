@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spend</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="apple-touch-icon" href="Spends.png">
+    <link rel="icon" href="Spends.png"> </head>
+<body>
+
+    <div id="login-container" class="apple-card">
+        <h2><img src="logoapple.png" alt="Spend Logo" class="title-logo">Spend</h2>
+        <input type="password" id="password-input" placeholder="Contraseña">
+        <p id="login-message" class="error"></p>
+        <button id="login-button" class="apple-button">Entrar</button>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <header class="app-header">
+            <h1><img src="logoapple.png" alt="Spend Logo" class="title-logo"> Spend</h1>
+            <button id="logout-button" class="apple-button-secondary">Cerrar Sesión</button>
+        </header>
+
+        <nav class="category-tabs-nav">
+            <div id="category-tabs" class="category-tabs-scroll">
+                </div>
+            <button id="add-category-button" class="apple-button-icon">+</button>
+             <button id="manage-categories-button" class="apple-button-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.113-.045.22-.072.324A3.875 3.875 0 0 0 7.5 9.75c0 1.338.277 2.662.835 3.732.047.09.096.177.146.26l.169.313c.24.445.478.904.692 1.365 1.448 2.903 2.308 5.568 2.308 5.568s-.56-1.5-.943-2.166a3.86 3.86 0 0 1-.027-.058 3.875 3.875 0 0 0-.536-.933c.123-.1.24-.22.355-.353l.38-.445A3.875 3.875 0 0 0 12 10.125c.834 0 1.62.246 2.284.622l.355.445c.115.133.232.253.355.353.116.1.226.195.335.284.148.12.296.236.446.347.168.125.332.242.497.355.207.135.41.268.608.397.06.04.116.075.17.108 1.25.727 2.15 1.678 2.672 2.5.39.602.56-1.5.56-1.5s-.86-2.665-2.308-5.568a3.923 3.923 0 0 0-.692-1.365l-.17-.313c-.05-.083-.099-.17-.146-.26A3.875 3.875 0 0 0 16.5 9.75c0-1.338-.277-2.662-.835-3.732-.047-.09-.096-.177-.146-.26l-.169-.313c-.24-.445-.478-.904-.692-1.365C13.568 2.308 12.603 2.25 11.078 2.25Z" clip-rule="evenodd" />
+                    <path d="M14.654 18.025a1.75 1.75 0 1 0-3.5 0 1.75 1.75 0 0 0 3.5 0Z" />
+                </svg>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <div id="category-view-container">
+                </div>
+        </main>
+    </div>
+
+    <div id="add-category-modal" class="modal hidden">
+        <div class="modal-content apple-card">
+            <h2>Crear Nueva Categoría</h2>
+            <input type="text" id="new-category-input" placeholder="Nombre de la categoría" class="apple-input">
+            <div class="modal-actions">
+                <button id="confirm-add-category" class="apple-button">Crear</button>
+                <button id="cancel-add-category" class="apple-button-secondary">Cancelar</button>
+            </div>
+            <p id="category-modal-message" class="info"></p>
+        </div>
+    </div>
+
+    <div id="expense-modal" class="modal hidden">
+        <div class="modal-content apple-card">
+            <h2 id="expense-modal-title">Añadir Nuevo Gasto</h2>
+            <input type="number" id="modal-expense-amount" placeholder="Cantidad (€)" class="apple-input" required>
+            <input type="text" id="modal-expense-description" placeholder="Descripción" class="apple-input" required>
+            <input type="date" id="modal-expense-date" class="apple-input" required>
+            <select id="modal-expense-category-select" class="apple-input">
+                <option value="">Selecciona Categoría</option>
+                </select>
+            <div class="modal-actions">
+                <button id="confirm-expense-button" class="apple-button">Añadir Gasto</button>
+                <button id="cancel-expense-button" class="apple-button-secondary">Cancelar</button>
+            </div>
+            <p id="expense-modal-message" class="info"></p>
+        </div>
+    </div>
+
+    <div id="manage-categories-modal" class="modal hidden">
+        <div class="modal-content apple-card">
+            <h2>Gestionar Categorías</h2>
+            <ul id="editable-category-list" class="category-management-list">
+                </ul>
+            <div class="modal-actions">
+                <button id="close-manage-categories-modal" class="apple-button-secondary">Cerrar</button>
+            </div>
+             <p id="manage-category-message" class="info"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
