@@ -1,4 +1,4 @@
-/* Variables de color estilo Apple - ¡ACTUALIZADAS! */
+/* Variables de color estilo Apple */
 :root {
     --apple-blue: #0a7aff; /* Azul primario (0a7aff) */
     --apple-light-blue: #0a7aff; /* Azul más claro para algunos elementos */
@@ -20,12 +20,12 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0;
     padding: 0;
-    background-color: var(--apple-gray-light);
+    background-color: #FFFFFF; /* Fondo blanco */
     color: var(--apple-text-dark);
     display: flex;
     justify-content: center;
-    min-height: 100vh;
-    padding: 20px 0;
+    /* min-height: 100vh;  Eliminado para el sticky header/nav */
+    padding: 0; /* Eliminado padding del body para que el header pegue arriba */
     box-sizing: border-box;
     overflow-x: hidden;
 }
@@ -40,13 +40,13 @@ body {
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 16px var(--apple-shadow);
-    width: 95%;
-    max-width: 550px;
-    margin: 0 auto;
+    width: 95%; /* Mantiene un margen del 5% */
+    max-width: 550px; /* Ancho máximo constante */
+    margin: 0 auto; /* Centrado horizontal */
     box-sizing: border-box;
 }
 
-/* Contenedor de Login - ¡ESTILO MEJORADO! */
+/* Contenedor de Login */
 #login-container {
     padding: 40px 25px;
     text-align: center;
@@ -54,38 +54,47 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    /* Ajustes específicos para el login */
-    max-width: 400px; /* Un poco más compacto */
+    max-width: 400px;
     margin-top: 10vh; /* Centrar verticalmente en la pantalla si hay espacio */
+    margin-left: auto; /* Centrar con margin auto también para login */
+    margin-right: auto;
 }
 
 #login-container h2 {
-    font-size: 2.2em; /* Título más grande */
+    font-size: 2.2em;
     font-weight: 700;
     color: var(--apple-text-dark);
     margin-top: 0;
-    margin-bottom: 20px; /* Más espacio debajo del título */
-    display: flex; /* Para alinear el logo y el texto */
-    align-items: center; /* Centrar verticalmente */
-    justify-content: center; /* Centrar horizontalmente */
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #login-container input {
     width: 100%;
-    max-width: 280px; /* Ajuste para el input */
+    max-width: 280px;
 }
 
 #login-container #login-button {
-    width: 100%; /* Botón de login a ancho completo de la card */
+    width: 100%;
     max-width: 280px;
-    padding: 15px 20px; /* Más padding para el botón */
+    padding: 15px 20px;
     font-size: 1.1em;
 }
 
-
+/* --- CAMBIOS CLAVE AQUÍ: Ancho Consistente y Encabezado Fijo --- */
 #app-container {
     padding: 0;
-    max-width: 600px;
+    width: 95%; /* Mantiene el mismo ancho relativo que apple-card */
+    max-width: 550px; /* Mismo ancho máximo que apple-card */
+    margin: 20px auto; /* Centrado y con un margen superior e inferior */
+    display: flex; /* Para que sus hijos se organicen en columna */
+    flex-direction: column; /* Organiza header, nav y main en columna */
+    min-height: calc(100vh - 40px); /* Ocupa casi toda la altura visible */
+    box-shadow: 0 4px 16px var(--apple-shadow); /* Mueve la sombra al contenedor principal */
+    border-radius: 12px; /* Aplica el border-radius al contenedor principal */
+    overflow: hidden; /* Asegura que el contenido no se salga de los bordes redondeados */
 }
 
 /* Encabezado de la App */
@@ -96,8 +105,12 @@ body {
     padding: 20px 25px;
     border-bottom: 1px solid var(--apple-gray-light);
     background-color: var(--apple-card-background);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    /* No border-radius aquí, ya lo tiene el app-container */
+    position: sticky; /* HACE EL HEADER FIJO */
+    top: 0; /* Lo fija en la parte superior */
+    z-index: 20; /* Asegura que esté por encima de otros elementos */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    box-sizing: border-box; /* Incluye padding en el ancho */
 }
 
 .app-header h1 {
@@ -105,18 +118,17 @@ body {
     font-weight: 700;
     color: var(--apple-text-dark);
     margin: 0;
-    display: flex; /* Para alinear el logo y el texto */
-    align-items: center; /* Centrar verticalmente */
+    display: flex;
+    align-items: center;
 }
 
-/* ESTILO DEL LOGO AL LADO DEL TÍTULO (¡MUY IMPORTANTE!) */
+/* ESTILO DEL LOGO AL LADO DEL TÍTULO */
 .title-logo {
-    height: 1.1em; /* Ajusta este valor. 1em es la altura de la fuente actual. 1.1em lo hace un poco más grande para que la parte superior e inferior del logo coincidan con el texto. */
-    vertical-align: baseline; /* Alinea la base del icono con la línea base del texto */
-    margin-right: 8px; /* Espacio entre el logo y el texto */
-    /* Si el logo tiene mucho espacio transparente, puedes ajustar con object-fit o padding */
-    object-fit: contain; /* Asegura que la imagen se ajuste sin distorsionarse */
-    line-height: 1; /* Ayuda a la alineación vertical */
+    height: 1.1em;
+    vertical-align: middle;
+    margin-right: 8px;
+    width: auto;
+    flex-shrink: 0;
 }
 
 
@@ -128,10 +140,12 @@ body {
     padding: 10px 20px;
     border-bottom: 1px solid var(--apple-gray-light);
     gap: 10px;
-    position: sticky;
-    top: 0;
+    position: sticky; /* HACE EL NAV FIJO */
+    top: 90px; /* Ajusta esto al alto de tu header para que pegue justo debajo */
     z-index: 10;
     box-shadow: 0 2px 8px var(--apple-shadow);
+    width: 100%; /* Ocupa todo el ancho disponible */
+    box-sizing: border-box; /* Incluye padding en el ancho */
 }
 
 .category-tabs-scroll {
@@ -167,10 +181,10 @@ body {
     box-shadow: 0 2px 8px rgba(10, 122, 255, 0.3);
 }
 
-/* Botones Apple - ¡ESTILO MEJORADO: SIN BORDES, SOLO SOMBRAS! */
+/* Botones Apple */
 .apple-button, .apple-button-secondary, .apple-button-icon {
     padding: 12px 20px;
-    border: none; /* Eliminado el borde */
+    border: none;
     border-radius: 10px;
     font-size: 1.05em;
     font-weight: 600;
@@ -180,9 +194,9 @@ body {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--apple-card-background); /* Blanco por defecto */
-    color: var(--apple-blue); /* Texto azul para el secondary */
-    box-shadow: 0 2px 8px var(--apple-button-shadow); /* Sombra para profundidad */
+    background-color: var(--apple-card-background);
+    color: var(--apple-blue);
+    box-shadow: 0 2px 8px var(--apple-button-shadow);
 }
 
 .apple-button {
@@ -209,12 +223,12 @@ body {
 }
 
 .apple-button-icon {
-    background-color: var(--apple-card-background); /* Blanco por defecto */
-    color: var(--apple-blue); /* Color del icono */
+    background-color: var(--apple-card-background);
+    color: var(--apple-blue);
     padding: 8px 12px;
     font-size: 1.5em;
     line-height: 1;
-    box-shadow: 0 2px 8px var(--apple-button-shadow); /* Sombra para el icono */
+    box-shadow: 0 2px 8px var(--apple-button-shadow);
 }
 
 .apple-button-icon:hover {
@@ -224,9 +238,9 @@ body {
 
 /* Estilo para el icono dentro del botón */
 .apple-button-icon svg {
-    width: 24px; /* Tamaño del SVG */
+    width: 24px;
     height: 24px;
-    fill: currentColor; /* El color del SVG se adaptará al color del texto del botón */
+    fill: currentColor;
 }
 
 
@@ -237,7 +251,7 @@ body {
     margin-bottom: 15px;
     border: 1px solid var(--apple-gray-light);
     border-radius: 8px;
-    font-size: 1em;
+    font-size: 16px; /* Asegura que el font-size sea 16px para evitar zoom en móvil */
     box-sizing: border-box;
     background-color: var(--apple-card-background);
     color: var(--apple-text-dark);
@@ -251,7 +265,7 @@ body {
     outline: none;
 }
 
-/* Mensajes de Error/Info - ¡COLORES ACTUALIZADOS! */
+/* Mensajes de Error/Info */
 .error {
     color: var(--apple-red);
     font-weight: 500;
@@ -267,13 +281,16 @@ body {
 }
 
 /* Contenido Principal (dentro de cada pestaña) */
+/* El padding interno de main-content se mantiene para el contenido */
 .main-content {
     padding: 20px 25px;
     background-color: var(--apple-card-background);
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    /* No border-radius aquí, ya lo tiene el app-container */
     padding-bottom: 40px;
+    flex-grow: 1; /* Permite que el contenido ocupe el espacio restante */
+    overflow-y: auto; /* Permite scroll solo en el contenido si es necesario */
 }
+
 
 /* Sección de Encabezado de Lista (para el botón Añadir Gasto) */
 .section-header {
@@ -408,8 +425,8 @@ ul {
     border-radius: 8px;
     white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: none; /* Asegura que los botones pequeños tampoco tengan borde */
-    background-color: var(--apple-card-background); /* Blanco por defecto */
+    border: none;
+    background-color: var(--apple-card-background);
 }
 
 .expense-actions .edit-button {
@@ -429,17 +446,17 @@ ul {
 
 /* Lista de gestión de categorías (dentro del modal) */
 .category-management-list {
-    max-height: 300px; /* Limita la altura para scroll si hay muchas */
+    max-height: 300px;
     overflow-y: auto;
     margin-top: 20px;
     margin-bottom: 20px;
     border: 1px solid var(--apple-gray-light);
     border-radius: 8px;
-    background-color: var(--apple-gray-light); /* Fondo suave */
+    background-color: var(--apple-gray-light);
 }
 
 .category-management-list li {
-    background-color: var(--apple-card-background); /* Fondo blanco para cada item */
+    background-color: var(--apple-card-background);
     padding: 10px 15px;
     border-bottom: 1px solid var(--apple-gray-light);
     display: flex;
@@ -518,20 +535,20 @@ ul {
     width: 48%;
 }
 
-/* Responsive para iPhone (media queries) - AJUSTES FINOS */
-@media (max-width: 450px) { /* Cubre iPhone 11, 13, Xs y otros móviles */
+/* Responsive para iPhone (media queries) */
+@media (max-width: 450px) {
     body {
-        padding: 10px 0;
+        padding: 0; /* Asegura que el body no tenga padding */
     }
 
-    .apple-card {
-        padding: 15px;
-        border-radius: 10px;
-    }
-
+    /* El login-container mantiene su margen vertical */
     #login-container {
         padding: 30px 15px;
-        margin-top: 5vh; /* Ajuste para móviles */
+        margin-top: 5vh;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%; /* Ajuste de ancho para móviles */
+        max-width: 400px; /* Sigue respetando el máximo */
     }
 
     #login-container h2 {
@@ -540,7 +557,15 @@ ul {
     }
 
     #login-container input, #login-container #login-button {
-        max-width: none; /* Quitar límite para que ocupe el 100% en móvil */
+        max-width: none;
+    }
+
+    /* app-container también tendrá un ancho fijo en móviles */
+    #app-container {
+        width: 95%; /* Mismo ancho relativo que el login */
+        max-width: 550px; /* El mismo max-width */
+        margin: 10px auto; /* Margen menor en móvil */
+        min-height: calc(100vh - 20px); /* Ajuste para el nuevo margen */
     }
 
     .app-header {
@@ -551,12 +576,11 @@ ul {
         font-size: 1.6em;
     }
     
-    /* Ajuste del logo en móviles */
     .app-header h1 .title-logo,
     #login-container h2 .title-logo {
-        height: 1em; /* Un poco más pequeño en móvil */
+        height: 1em;
+        vertical-align: middle;
     }
-
 
     .apple-button, .apple-button-secondary, .apple-button-icon {
         padding: 10px 15px;
