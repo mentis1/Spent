@@ -7,23 +7,23 @@
     --apple-medium-gray: #8f8e94; /* Gris medio para texto secundario */
     --apple-card-background: #ffffff; /* Blanco para fondos de tarjetas */
     --apple-text-dark: #1c1c1e; /* Texto oscuro */
-    --apple-shadow-light: rgba(0, 0, 0, 0.09); /* Sombra sutil */
+    --apple-shadow-light: rgba(0, 0, 0, 0.1); /* Sombra sutil */
     --apple-shadow-medium: rgba(0, 0, 0, 0.15); /* Sombra para botones */
     --apple-shadow-strong: rgba(0, 0, 0, 0.25); /* Sombra para hover/active */
-    --apple-blue-shadow: rgba(10, 122, 255, 0.4); /* Sombra azul para elementos activos */
+    --apple-blue-shadow: rgba(68, 152, 255, 0.4); /* Sombra azul para elementos activos */
 
     /* Nuevas variables de sombra para mayor control */
-    --apple-strong-shadow: rgba(0, 0, 0, 0.2); /* Corrected value, assuming a non-zero opacity */
+    --apple-strong-shadow: rgba(0, 0, 0, 0.3);
     --apple-subtle-shadow: rgba(0, 0, 0, 0.4);
 
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
     --logo-size-login: 1.2em; /* Tamaño del logo en la pantalla de login (restaurado) */
-    --logo-size-app: 2.4em;   /* Tamaño del logo en el encabezado de la app (más grande) */
+    --logo-size-app: 2.1em;   /* Tamaño del logo en el encabezado de la app (más grande) */
 }
 
 /* Estilos Generales */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Corrected typo */
+    font-family: -apple-system, BlinkMacMacFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0;
     padding: 0;
     background-color: var(--apple-light-gray-bg);
@@ -53,28 +53,28 @@ body {
     box-sizing: border-box;
 }
 
-/* Contenedor de Login (Restaurado a tamaños anteriores) */
+/* Contenedor de Login (Restaurado a tamaños anteriores, ajustado a más pequeño) */
 #login-container {
-    padding: 50px 30px; /* Restored padding */
+    padding: 30px 20px; /* Ajustado a más pequeño */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* Restored gap */
-    max-width: 450px; /* Restored max-width */
-    margin-top: 15vh; /* Restored margin-top */
+    gap: 15px; /* Ajustado a más pequeño */
+    max-width: 380px; /* Ajustado a más pequeño */
+    margin-top: 10vh; /* Ajustado a más pequeño */
 }
 
 .login-title {
-    font-size: 2.5em; /* Restored font size */
+    font-size: 2.0em; /* Ajustado a más pequeño */
     font-weight: 700;
     color: var(--apple-text-dark);
     margin-top: 0;
-    margin-bottom: 25px; /* Restored margin */
+    margin-bottom: 20px; /* Ajustado a más pequeño */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Restored gap */
+    gap: 8px; /* Ajustado a más pequeño */
 }
 
 /* LOGO ESPECÍFICO PARA PÁGINA DE LOGIN (Restaurado) */
@@ -88,20 +88,27 @@ body {
 }
 
 /* El estilo .title-logo genérico se elimina ya que ahora cada instancia tiene su propio selector o hereda */
-/* Removed redundant .title-logo rule */
+.title-logo {
+    vertical-align: middle;
+    width: auto;
+    flex-shrink: 0;
+    position: relative;
+    top: 0.05em;
+}
+
 
 #login-container #password-input {
     width: 100%;
-    max-width: 320px; /* Restored max-width */
+    max-width: 280px; /* Ajustado a más pequeño */
     text-align: center;
-    font-size: 2.2em; /* Restored font size */
-    letter-spacing: 0.25em; /* Restored letter-spacing */
+    font-size: 1.8em; /* Ajustado a más pequeño */
+    letter-spacing: 0.2em; /* Ajustado a más pequeño */
     -webkit-text-security: disc;
-    margin-bottom: 25px; /* Restored margin */
+    margin-bottom: 20px; /* Ajustado a más pequeño */
     background-color: var(--apple-light-gray-bg);
     border: 1px solid var(--apple-light-gray-bg);
-    border-radius: 10px; /* Restored border-radius */
-    padding: 12px 18px; /* Restored padding */
+    border-radius: 8px; /* Ajustado a más pequeño */
+    padding: 10px 15px; /* Ajustado a más pequeño */
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.07); /* Restored inset shadow */
     transition: all 0.2s ease;
 }
@@ -112,23 +119,23 @@ body {
     outline: none;
 }
 
-/* Teclado Numérico (Restaurado a tamaños anteriores) */
+/* Teclado Numérico (Restaurado a tamaños anteriores, ajustado a más pequeño) */
 #numeric-keypad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px; /* Restored gap */
+    gap: 15px; /* Ajustado a más pequeño */
     width: 100%;
-    max-width: 350px; /* Restored max-width */
-    margin-top: 15px; /* Restored margin */
+    max-width: 300px; /* Ajustado a más pequeño */
+    margin-top: 10px; /* Ajustado a más pequeño */
 }
 
 .keypad-button {
     background-color: var(--apple-card-background);
     color: var(--apple-text-dark);
     border: none;
-    border-radius: 12px; /* Restored border-radius */
-    padding: 25px 0; /* Restored padding */
-    font-size: 2.0em; /* Restored font size */
+    border-radius: 10px; /* Ajustado a más pequeño */
+    padding: 20px 0; /* Ajustado a más pequeño */
+    font-size: 1.6em; /* Ajustado a más pequeño */
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 3px 10px var(--apple-shadow-medium); /* Restored shadow */
@@ -145,7 +152,7 @@ body {
 .keypad-button.clear-button, .keypad-button.delete-button {
     background-color: var(--apple-card-background);
     color: var(--apple-medium-gray);
-    font-size: 1.7em; /* Restored font size */
+    font-size: 1.4em; /* Ajustado a más pequeño */
 }
 
 .keypad-button.clear-button:active, .keypad-button.delete-button:active {
@@ -682,7 +689,7 @@ body {
 
     .app-header {
         padding: 30px 50px; /* Grande */
-    }
+    } /* Moved this closing brace to fix syntax error */
 
     .app-header h1 {
         font-size: 2.0em; /* Even larger font size */
