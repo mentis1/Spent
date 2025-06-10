@@ -7,14 +7,14 @@
     --apple-medium-gray: #8f8e94; /* Gris medio para texto secundario */
     --apple-card-background: #ffffff; /* Blanco para fondos de tarjetas */
     --apple-text-dark: #1c1c1e; /* Texto oscuro */
-    --apple-shadow-light: rgba(0, 0, 0, 0.08); /* Sombra sutil */
+    --apple-shadow-light: rgba(0, 0, 0, 0.09); /* Sombra sutil */
     --apple-shadow-medium: rgba(0, 0, 0, 0.15); /* Sombra para botones */
     --apple-shadow-strong: rgba(0, 0, 0, 0.25); /* Sombra para hover/active */
-    --apple-blue-shadow: rgba(10, 122, 255, 0.3); /* Sombra azul para elementos activos */
+    --apple-blue-shadow: rgba(10, 122, 255, 0.4); /* Sombra azul para elementos activos */
 
     /* Nuevas variables de sombra para mayor control */
-    --apple-strong-shadow: rgba(7, 0, 0, 0.4);
-    --apple-subtle-shadow: rgba(0, 7, 0, 0.5);
+    --apple-strong-shadow: rgba(0, 0, 0, 0.2); /* Corrected value, assuming a non-zero opacity */
+    --apple-subtle-shadow: rgba(0, 0, 0, 0.4);
 
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
     --logo-size-login: 1.2em; /* Tamaño del logo en la pantalla de login (restaurado) */
@@ -23,7 +23,7 @@
 
 /* Estilos Generales */
 body {
-    font-family: -apple-system, BlinkMacMacFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Corrected typo */
     margin: 0;
     padding: 0;
     background-color: var(--apple-light-gray-bg);
@@ -88,14 +88,7 @@ body {
 }
 
 /* El estilo .title-logo genérico se elimina ya que ahora cada instancia tiene su propio selector o hereda */
-.title-logo {
-    vertical-align: middle;
-    width: auto;
-    flex-shrink: 0;
-    position: relative;
-    top: 0.05em;
-}
-
+/* Removed redundant .title-logo rule */
 
 #login-container #password-input {
     width: 100%;
@@ -688,8 +681,7 @@ body {
     }
 
     .app-header {
-    padding: 30px 50px; /* Grande */
-}
+        padding: 30px 50px; /* Grande */
     }
 
     .app-header h1 {
