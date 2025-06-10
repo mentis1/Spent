@@ -695,12 +695,10 @@ function exportDataToTextFile() {
     const encodedUri = encodeURIComponent(textContent);
     const link = document.createElement("a");
     link.setAttribute("href", `data:text/plain;charset=utf-8,${encodedUri}`);
-    link.setAttribute("download", "reporte_gastos_spent.txt"); // Nombre del archivo exportado como .txt
+    link.setAttribute("download", "Mi reporte de gastos.txt"); // Nombre del archivo exportado como .txt
     document.body.appendChild(link); // Required for Firefox
     link.click();
     document.body.removeChild(link); // Clean up
-
-    alert('Reporte de gastos exportado a reporte_gastos_spent.txt');
 }
 
 
