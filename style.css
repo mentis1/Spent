@@ -17,8 +17,8 @@
     --apple-subtle-shadow: rgba(0, 0, 0, 0.1);
 
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
-    --logo-size-login: 1.5em; /* Tamaño del logo en la pantalla de login (más pequeño) */
-    --logo-size-app: 2.1em;   /* Tamaño del logo en el encabezado de la app (más grande) */
+    --logo-size-login: 1.2em; /* Tamaño del logo en la pantalla de login (restaurado) */
+    --logo-size-app: 2.6em;   /* Tamaño del logo en el encabezado de la app (más grande) */
 }
 
 /* Estilos Generales */
@@ -41,7 +41,7 @@ body {
     display: none !important;
 }
 
-/* Contenedores Principales (Estilo Card) */
+/* Contenedores Principales (Estilo Card) - General app size */
 .apple-card {
     background-color: var(--apple-card-background);
     padding: 35px; /* Even larger padding */
@@ -53,33 +53,33 @@ body {
     box-sizing: border-box;
 }
 
-/* Contenedor de Login */
+/* Contenedor de Login (Restaurado a tamaños anteriores) */
 #login-container {
-    padding: 60px 35px; /* Even larger padding */
+    padding: 50px 30px; /* Restored padding */
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 25px; /* Even larger gap */
-    max-width: 500px; /* Even larger max-width */
-    margin-top: 18vh; /* Even more margin-top */
+    gap: 20px; /* Restored gap */
+    max-width: 450px; /* Restored max-width */
+    margin-top: 15vh; /* Restored margin-top */
 }
 
 .login-title {
-    font-size: 2.8em; /* Even larger font size */
+    font-size: 2.5em; /* Restored font size */
     font-weight: 700;
     color: var(--apple-text-dark);
     margin-top: 0;
-    margin-bottom: 30px; /* Even larger margin */
+    margin-bottom: 25px; /* Restored margin */
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px; /* Even larger gap */
+    gap: 10px; /* Restored gap */
 }
 
-/* LOGO ESPECÍFICO PARA PÁGINA DE LOGIN (MÁS PEQUEÑO) */
+/* LOGO ESPECÍFICO PARA PÁGINA DE LOGIN (Restaurado) */
 #login-container .title-logo {
-    height: var(--logo-size-login); /* Usa la nueva variable para login */
+    height: var(--logo-size-login); /* Usa la variable para login, que es más pequeña */
     vertical-align: middle;
     width: auto;
     flex-shrink: 0;
@@ -99,60 +99,60 @@ body {
 
 #login-container #password-input {
     width: 100%;
-    max-width: 350px; /* Even larger max-width */
+    max-width: 320px; /* Restored max-width */
     text-align: center;
-    font-size: 2.5em; /* Even larger font size */
-    letter-spacing: 0.3em; /* Even larger letter-spacing */
+    font-size: 2.2em; /* Restored font size */
+    letter-spacing: 0.25em; /* Restored letter-spacing */
     -webkit-text-security: disc;
-    margin-bottom: 30px; /* Even larger margin */
+    margin-bottom: 25px; /* Restored margin */
     background-color: var(--apple-light-gray-bg);
     border: 1px solid var(--apple-light-gray-bg);
-    border-radius: 12px; /* Even larger border-radius */
-    padding: 15px 20px; /* Even larger padding */
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1); /* Stronger inset shadow */
+    border-radius: 10px; /* Restored border-radius */
+    padding: 12px 18px; /* Restored padding */
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.07); /* Restored inset shadow */
     transition: all 0.2s ease;
 }
 
 #login-container #password-input:focus {
     border-color: var(--apple-blue);
-    box-shadow: 0 0 0 5px rgba(10, 122, 255, 0.4); /* Stronger focus shadow */
+    box-shadow: 0 0 0 4px rgba(10, 122, 255, 0.3); /* Restored focus shadow */
     outline: none;
 }
 
-/* Teclado Numérico */
+/* Teclado Numérico (Restaurado a tamaños anteriores) */
 #numeric-keypad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px; /* Even larger gap */
+    gap: 20px; /* Restored gap */
     width: 100%;
-    max-width: 380px; /* Even larger max-width */
-    margin-top: 20px; /* Even larger margin */
+    max-width: 350px; /* Restored max-width */
+    margin-top: 15px; /* Restored margin */
 }
 
 .keypad-button {
     background-color: var(--apple-card-background);
     color: var(--apple-text-dark);
     border: none;
-    border-radius: 15px; /* Even larger border-radius */
-    padding: 30px 0; /* Even larger padding */
-    font-size: 2.3em; /* Even larger font size */
+    border-radius: 12px; /* Restored border-radius */
+    padding: 25px 0; /* Restored padding */
+    font-size: 2.0em; /* Restored font size */
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px var(--apple-shadow-medium); /* Stronger shadow */
+    box-shadow: 0 3px 10px var(--apple-shadow-medium); /* Restored shadow */
     transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
     -webkit-tap-highlight-color: transparent;
 }
 
 .keypad-button:active {
     background-color: var(--apple-light-gray-bg);
-    box-shadow: 0 2px 8px var(--apple-shadow-light); /* Stronger active shadow */
+    box-shadow: 0 2px 6px var(--apple-shadow-light); /* Restored active shadow */
     transform: translateY(1px);
 }
 
 .keypad-button.clear-button, .keypad-button.delete-button {
     background-color: var(--apple-card-background);
     color: var(--apple-medium-gray);
-    font-size: 1.9em; /* Even larger font size */
+    font-size: 1.7em; /* Restored font size */
 }
 
 .keypad-button.clear-button:active, .keypad-button.delete-button:active {
@@ -193,7 +193,7 @@ body {
 .app-title-group {
     display: flex;
     align-items: center;
-    gap: 10px; /* Even larger gap */
+    gap: 15px; /* Even larger gap */
 }
 
 .app-header h1 {
@@ -700,7 +700,7 @@ body {
         height: var(--logo-size-app); /* Mantenido el tamaño para móvil, en línea con el h1 */
     }
 
-    /* LOGO EN LOGIN PARA MÓVIL (Usa la variable) */
+    /* LOGO EN LOGIN PARA MÓVIL (Restaurado) */
     #login-container .title-logo {
         height: var(--logo-size-login); /* Más pequeño en login para móvil */
     }
