@@ -3,53 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spend</title>
-    <link rel="stylesheet" href="style.css"> 
-    <link rel="apple-touch-icon" href="Spends.png">
-    <link rel="icon" href="Spends.png"> </head>
+    <title>Spent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Spends.png">
+    <link rel="apple-touch-icon" href="logoapple.png">
+</head>
 <body>
 
     <div id="login-container" class="apple-card">
-        <h2><img src="logoapple.png" alt="Spend Logo" class="title-logo">Spend</h2>
-        <input type="password" id="password-input" placeholder="Contraseña">
+        <h2 class="login-title"><img src="logoapple.png" alt="Spent Logo" class="title-logo"> Spent</h2>
+        <input type="password" id="password-input" placeholder="Introduce PIN" maxlength="4" readonly>
         <p id="login-message" class="error"></p>
-        <button id="login-button" class="apple-button">Entrar</button>
+        <div id="numeric-keypad">
+            <button class="keypad-button">1</button>
+            <button class="keypad-button">2</button>
+            <button class="keypad-button">3</button>
+            <button class="keypad-button">4</button>
+            <button class="keypad-button">5</button>
+            <button class="keypad-button">6</button>
+            <button class="keypad-button">7</button>
+            <button class="keypad-button">8</button>
+            <button class="keypad-button">9</button>
+            <button class="keypad-button clear-button">C</button>
+            <button class="keypad-button">0</button>
+            <button class="keypad-button delete-button">⌫</button>
+        </div>
     </div>
 
     <div id="app-container" class="hidden">
         <header class="app-header">
-            <h1><img src="logoapple.png" alt="Spend Logo" class="title-logo"> Spend</h1>
-            <button id="logout-button" class="apple-button-secondary">Cerrar Sesión</button>
+            <div class="app-title-group">
+                <img src="logoapple.png" alt="Spent Logo" class="title-logo">
+                <h1>Spent</h1>
+            </div>
+            <div class="header-actions">
+                <button id="export-button" class="export-button">
+                    <img src="exportar.png" alt="Exportar">
+                </button>
+                <button id="logout-button" class="logout-button">Log Out</button>
+            </div>
         </header>
 
         <nav class="category-tabs-nav">
-            <div id="category-tabs" class="category-tabs-scroll">
+            <div id="category-tabs-scroll-wrapper" class="category-tabs-scroll-wrapper">
+                <button class="category-tab active" data-category-name="General" data-category-id="general-fixed">General</button>
                 </div>
-            <button id="add-category-button" class="apple-button-icon">+</button>
-             <button id="manage-categories-button" class="apple-button-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                    <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.113-.045.22-.072.324A3.875 3.875 0 0 0 7.5 9.75c0 1.338.277 2.662.835 3.732.047.09.096.177.146.26l.169.313c.24.445.478.904.692 1.365 1.448 2.903 2.308 5.568 2.308 5.568s-.56-1.5-.943-2.166a3.86 3.86 0 0 1-.027-.058 3.875 3.875 0 0 0-.536-.933c.123-.1.24-.22.355-.353l.38-.445A3.875 3.875 0 0 0 12 10.125c.834 0 1.62.246 2.284.622l.355.445c.115.133.232.253.355.353.116.1.226.195.335.284.148.12.296.236.446.347.168.125.332.242.497.355.207.135.41.268.608.397.06.04.116.075.17.108 1.25.727 2.15 1.678 2.672 2.5.39.602.56-1.5.56-1.5s-.86-2.665-2.308-5.568a3.923 3.923 0 0 0-.692-1.365l-.17-.313c-.05-.083-.099-.17-.146-.26A3.875 3.875 0 0 0 16.5 9.75c0-1.338-.277-2.662-.835-3.732-.047-.09-.096-.177-.146-.26l-.169-.313c-.24-.445-.478-.904-.692-1.365C13.568 2.308 12.603 2.25 11.078 2.25Z" clip-rule="evenodd" />
-                    <path d="M14.654 18.025a1.75 1.75 0 1 0-3.5 0 1.75 1.75 0 0 0 3.5 0Z" />
-                </svg>
-            </button>
         </nav>
 
-        <main class="main-content">
-            <div id="category-view-container">
+        <main id="main-content" class="main-content">
+            <div id="view-General" class="category-main-view active" data-category="General">
+                <div class="summary-card">
+                    <span class="card-title">GENERAL</span>
+                    <span class="card-total-amount" id="general-total-amount">0.00€</span>
                 </div>
-        </main>
-    </div>
 
-    <div id="add-category-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2>Crear Nueva Categoría</h2>
-            <input type="text" id="new-category-input" placeholder="Nombre de la categoría" class="apple-input">
-            <div class="modal-actions">
-                <button id="confirm-add-category" class="apple-button">Crear</button>
-                <button id="cancel-add-category" class="apple-button-secondary">Cancelar</button>
+                <div class="categories-list-card">
+                    <span class="card-title">Categorías</span>
+                    <div id="categories-grid">
+                        </div>
+                    <button id="add-new-category-button" class="apple-button full-width-button">Añadir nueva categoría</button>
+                </div>
             </div>
-            <p id="category-modal-message" class="info"></p>
-        </div>
+
+            <div id="template-category-view" class="category-main-view hidden" data-category-template>
+                <div class="summary-card">
+                    <span class="card-title category-specific-title"></span>
+                    <span class="card-total-amount category-specific-total">0.00€</span>
+                </div>
+                <div class="add-expense-section">
+                    <button class="apple-button full-width-button add-expense-category-button">Añadir Nuevo Gasto</button>
+                </div>
+                <ul class="expense-list">
+                    </ul>
+                <p class="no-expenses hidden">No hay gastos en esta categoría aún.</p>
+            </div>
+        </main>
     </div>
 
     <div id="expense-modal" class="modal hidden">
@@ -60,7 +88,7 @@
             <input type="date" id="modal-expense-date" class="apple-input" required>
             <select id="modal-expense-category-select" class="apple-input">
                 <option value="">Selecciona Categoría</option>
-                </select>
+            </select>
             <div class="modal-actions">
                 <button id="confirm-expense-button" class="apple-button">Añadir Gasto</button>
                 <button id="cancel-expense-button" class="apple-button-secondary">Cancelar</button>
@@ -69,15 +97,38 @@
         </div>
     </div>
 
-    <div id="manage-categories-modal" class="modal hidden">
+    <div id="add-category-modal" class="modal hidden">
         <div class="modal-content apple-card">
-            <h2>Gestionar Categorías</h2>
-            <ul id="editable-category-list" class="category-management-list">
-                </ul>
+            <h2>Añadir Nueva Categoría</h2>
+            <input type="text" id="new-category-input" placeholder="Nombre de la categoría" class="apple-input">
             <div class="modal-actions">
-                <button id="close-manage-categories-modal" class="apple-button-secondary">Cerrar</button>
+                <button id="confirm-add-category" class="apple-button">Añadir</button>
+                <button id="cancel-add-category" class="apple-button-secondary">Cancelar</button>
             </div>
-             <p id="manage-category-message" class="info"></p>
+            <p id="category-modal-message" class="info"></p>
+        </div>
+    </div>
+
+    <div id="edit-category-modal" class="modal hidden">
+        <div class="modal-content apple-card">
+            <h2>Editar Categoría</h2>
+            <input type="text" id="edit-category-input" class="apple-input">
+            <div class="modal-actions">
+                <button id="confirm-edit-category-button" class="apple-button">Guardar Cambios</button>
+                <button id="cancel-edit-category-button" class="apple-button-secondary">Cancelar</button>
+            </div>
+            <p id="edit-category-message" class="info"></p>
+        </div>
+    </div>
+
+    <div id="confirm-delete-modal" class="modal hidden">
+        <div class="modal-content apple-card">
+            <h2>Confirmar Eliminación</h2>
+            <p id="confirm-delete-message">¿Estás seguro de que quieres eliminar este elemento?</p>
+            <div class="modal-actions">
+                <button id="confirm-delete-button" class="apple-button delete-button">Eliminar</button>
+                <button id="cancel-delete-button" class="apple-button-secondary">Cancelar</button>
+            </div>
         </div>
     </div>
 

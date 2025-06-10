@@ -1,33 +1,32 @@
-/* Variables de color estilo Apple */
+/* Variables de color estilo Apple (ajustadas a los colores proporcionados) */
 :root {
-    --apple-blue: #0a7aff; /* Azul primario (0a7aff) */
-    --apple-light-blue: #0a7aff; /* Azul más claro para algunos elementos */
-    --apple-gray-light: #f1f1f1; /* Fondo general (f1f1f1) */
-    --apple-gray-medium: #8f8e94; /* Bordes, texto secundario (8f8e94) */
-    --apple-card-background: #FFFFFF; /* Fondo de tarjetas/modales */
-    --apple-text-dark: #1C1C1E; /* Texto oscuro */
-    --apple-text-medium: #8f8e94; /* Texto secundario (usando el gris medio) */
-    --apple-red: #ff3b2f; /* Botones de eliminar/cerrar sesión (ff3b2f) */
-    --apple-green: #1cc93a; /* Indicadores de éxito (1cc93a) */
-    --apple-orange: #ff9501; /* Naranja para editar (ff9501) */
-    --apple-shadow: rgba(0, 0, 0, 0.08); /* Sombra sutil */
-    --apple-button-shadow: rgba(0, 0, 0, 0.1); /* Sombra de botón más pronunciada */
-    --apple-button-hover-shadow: rgba(0, 0, 0, 0.2); /* Sombra más fuerte al hover */
+    --apple-blue: #0a7aff; /* Azul primario */
+    --apple-red: #ff3b2f; /* Rojo para eliminar/logout */
+    --apple-orange: #ff9501; /* Naranja para editar */
+    --apple-light-gray-bg: #f2f2f2; /* Fondo muy claro, casi blanco */
+    --apple-medium-gray: #8f8e94; /* Gris medio para texto secundario */
+    --apple-card-background: #ffffff; /* Blanco para fondos de tarjetas */
+    --apple-text-dark: #1c1c1e; /* Texto oscuro */
+    --apple-shadow-light: rgba(0, 0, 0, 0.08); /* Sombra sutil */
+    --apple-shadow-medium: rgba(0, 0, 0, 0.15); /* Sombra para botones */
+    --apple-shadow-strong: rgba(0, 0, 0, 0.25); /* Sombra para hover/active */
+    --apple-blue-shadow: rgba(10, 122, 255, 0.3); /* Sombra azul para elementos activos */
 }
 
 /* Estilos Generales */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: -apple-system, BlinkMacMacFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0;
     padding: 0;
-    background-color: #FFFFFF; /* Fondo blanco */
+    background-color: var(--apple-light-gray-bg); /* Fondo muy claro */
     color: var(--apple-text-dark);
     display: flex;
     justify-content: center;
-    /* min-height: 100vh;  Eliminado para el sticky header/nav */
-    padding: 0; /* Eliminado padding del body para que el header pegue arriba */
+    align-items: flex-start; /* Alinea arriba por defecto */
+    min-height: 100vh;
     box-sizing: border-box;
     overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
 }
 
 .hidden {
@@ -39,10 +38,10 @@ body {
     background-color: var(--apple-card-background);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 16px var(--apple-shadow);
-    width: 95%; /* Mantiene un margen del 5% */
-    max-width: 550px; /* Ancho máximo constante */
-    margin: 0 auto; /* Centrado horizontal */
+    box-shadow: 0 4px 16px var(--apple-shadow-light);
+    width: 95%;
+    max-width: 550px;
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
@@ -55,12 +54,10 @@ body {
     align-items: center;
     gap: 15px;
     max-width: 400px;
-    margin-top: 10vh; /* Centrar verticalmente en la pantalla si hay espacio */
-    margin-left: auto; /* Centrar con margin auto también para login */
-    margin-right: auto;
+    margin-top: 10vh;
 }
 
-#login-container h2 {
+.login-title {
     font-size: 2.2em;
     font-weight: 700;
     color: var(--apple-text-dark);
@@ -69,32 +66,95 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px; /* Espacio entre el logo y el texto */
 }
 
-#login-container input {
+.title-logo {
+    height: 2.1em; /* Ajusta el tamaño del logo */
+    vertical-align: middle;
+    width: auto;
+    flex-shrink: 0;
+    /* Nuevo estilo para alinear el logo con el texto */
+    position: relative;
+    top: 0.05em; /* Ajuste fino para la alineación vertical */
+}
+
+
+#login-container #password-input {
     width: 100%;
     max-width: 280px;
+    text-align: center;
+    font-size: 2em;
+    letter-spacing: 0.2em;
+    -webkit-text-security: disc; /* Oculta los caracteres con puntos */
+    margin-bottom: 20px;
+    background-color: var(--apple-light-gray-bg); /* Fondo gris del input */
+    border: 1px solid var(--apple-light-gray-bg); /* Borde sutil */
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra interna sutil */
+    transition: all 0.2s ease;
 }
 
-#login-container #login-button {
+#login-container #password-input:focus {
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(10, 122, 255, 0.2);
+    outline: none;
+}
+
+/* Teclado Numérico */
+#numeric-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
     width: 100%;
-    max-width: 280px;
-    padding: 15px 20px;
-    font-size: 1.1em;
+    max-width: 300px;
+    margin-top: 10px;
 }
 
-/* --- CAMBIOS CLAVE AQUÍ: Ancho Consistente y Encabezado Fijo --- */
+.keypad-button {
+    background-color: var(--apple-card-background); /* Blanco como el de los botones */
+    color: var(--apple-text-dark);
+    border: none;
+    border-radius: 10px;
+    padding: 20px 0;
+    font-size: 1.8em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--apple-shadow-medium); /* Sombra para los botones */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.keypad-button:active {
+    background-color: var(--apple-light-gray-bg); /* Fondo ligeramente más oscuro al presionar */
+    box-shadow: 0 1px 4px var(--apple-shadow-light); /* Sombra más sutil */
+    transform: translateY(1px); /* Efecto de "clic" */
+}
+
+.keypad-button.clear-button, .keypad-button.delete-button {
+    background-color: var(--apple-card-background); /* Blanco */
+    color: var(--apple-medium-gray); /* Gris para el texto/icono */
+    font-size: 1.5em;
+}
+
+.keypad-button.clear-button:active, .keypad-button.delete-button:active {
+    background-color: var(--apple-light-gray-bg);
+}
+
+/* APP CONTAINER - CONTENEDOR PRINCIPAL DE LA APP */
 #app-container {
     padding: 0;
-    width: 95%; /* Mantiene el mismo ancho relativo que apple-card */
-    max-width: 550px; /* Mismo ancho máximo que apple-card */
-    margin: 20px auto; /* Centrado y con un margen superior e inferior */
-    display: flex; /* Para que sus hijos se organicen en columna */
-    flex-direction: column; /* Organiza header, nav y main en columna */
-    min-height: calc(100vh - 40px); /* Ocupa casi toda la altura visible */
-    box-shadow: 0 4px 16px var(--apple-shadow); /* Mueve la sombra al contenedor principal */
-    border-radius: 12px; /* Aplica el border-radius al contenedor principal */
-    overflow: hidden; /* Asegura que el contenido no se salga de los bordes redondeados */
+    width: 95%;
+    max-width: 550px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 40px);
+    box-shadow: 0 4px 16px var(--apple-shadow-light);
+    border-radius: 12px;
+    overflow: hidden; /* Asegura que los elementos internos respeten el border-radius */
+    background-color: var(--apple-card-background); /* Fondo de la app es blanco */
 }
 
 /* Encabezado de la App */
@@ -102,15 +162,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
-    border-bottom: 1px solid var(--apple-gray-light);
+    padding: 20px 30px; /* Aumentado el padding horizontal */
+    border-bottom: 1px solid var(--apple-light-gray-bg); /* Línea divisoria sutil */
     background-color: var(--apple-card-background);
-    /* No border-radius aquí, ya lo tiene el app-container */
-    position: sticky; /* HACE EL HEADER FIJO */
-    top: 0; /* Lo fija en la parte superior */
-    z-index: 20; /* Asegura que esté por encima de otros elementos */
-    width: 100%; /* Ocupa todo el ancho disponible */
-    box-sizing: border-box; /* Incluye padding en el ancho */
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px var(--apple-shadow-light); /* Sombra inferior sutil para el header */
+}
+
+.app-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el logo y el texto */
 }
 
 .app-header h1 {
@@ -118,315 +184,330 @@ body {
     font-weight: 700;
     color: var(--apple-text-dark);
     margin: 0;
+}
+
+.header-actions {
     display: flex;
+    gap: 10px;
     align-items: center;
 }
 
-/* ESTILO DEL LOGO AL LADO DEL TÍTULO */
-.title-logo {
-    height: 1.1em;
-    vertical-align: middle;
-    margin-right: 8px;
-    width: auto;
-    flex-shrink: 0;
+/* Botón de Exportar (pequeño con icono) */
+.export-button {
+    background-color: transparent; /* Sin fondo */
+    border: none;
+    padding: 5px; /* Pequeño padding */
+    cursor: pointer;
+    border-radius: 8px; /* Ligeramente redondeado */
+    transition: background-color 0.2s ease;
 }
 
+.export-button:hover {
+    background-color: var(--apple-light-gray-bg); /* Fondo gris claro al pasar el ratón */
+}
+
+.export-button img {
+    height: 24px; /* Tamaño del icono */
+    width: auto;
+}
+
+/* Botón Log Out (Rojo) */
+.logout-button {
+    background-color: var(--apple-red);
+    color: var(--apple-card-background); /* Blanco */
+    padding: 10px 15px; /* Ajustado para ser más compacto */
+    border: none;
+    border-radius: 10px; /* Redondeado */
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--apple-shadow-medium);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #e03328; /* Rojo más oscuro al hover */
+    box-shadow: 0 4px 12px var(--apple-shadow-strong);
+}
 
 /* Pestañas de Categorías (Navigation) */
 .category-tabs-nav {
     display: flex;
     align-items: center;
     background-color: var(--apple-card-background);
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--apple-gray-light);
-    gap: 10px;
-    position: sticky; /* HACE EL NAV FIJO */
-    top: 90px; /* Ajusta esto al alto de tu header para que pegue justo debajo */
+    padding: 10px 30px; /* Aumentado el padding horizontal */
+    border-bottom: 1px solid var(--apple-light-gray-bg);
+    position: sticky;
+    top: 90px; /* Debajo del header */
     z-index: 10;
-    box-shadow: 0 2px 8px var(--apple-shadow);
-    width: 100%; /* Ocupa todo el ancho disponible */
-    box-sizing: border-box; /* Incluye padding en el ancho */
+    box-shadow: 0 2px 5px var(--apple-shadow-light); /* Sombra sutil para la barra de tabs */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.category-tabs-scroll {
+.category-tabs-scroll-wrapper {
     display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
-    padding-bottom: 5px;
+    padding-bottom: 5px; /* Espacio para el scrollbar */
     flex-grow: 1;
+    gap: 8px; /* Espacio entre las pestañas */
+    /* Estilos para el scrollbar en WebKit */
+    scrollbar-width: thin;
+    scrollbar-color: var(--apple-medium-gray) var(--apple-light-gray-bg);
+}
+
+.category-tabs-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+.category-tabs-scroll-wrapper::-webkit-scrollbar-track {
+    background: var(--apple-light-gray-bg);
+    border-radius: 10px;
+}
+.category-tabs-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--apple-medium-gray);
+    border-radius: 10px;
+    border: 1px solid var(--apple-light-gray-bg);
 }
 
 .category-tab {
-    padding: 8px 15px;
-    margin-right: 8px;
-    border-radius: 8px;
-    background-color: transparent;
+    background-color: var(--apple-card-background); /* Blanco por defecto */
     color: var(--apple-text-dark);
+    padding: 8px 15px;
+    border-radius: 8px;
     font-size: 0.95em;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     flex-shrink: 0;
-    border: none;
+    border: 1px solid var(--apple-light-gray-bg); /* Borde sutil */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra muy sutil */
 }
 
 .category-tab:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--apple-light-gray-bg);
 }
 
 .category-tab.active {
     background-color: var(--apple-blue);
     color: white;
-    box-shadow: 0 2px 8px rgba(10, 122, 255, 0.3);
+    box-shadow: 0 2px 8px var(--apple-blue-shadow);
+    border-color: var(--apple-blue); /* Borde del mismo color */
 }
 
-/* Botones Apple */
-.apple-button, .apple-button-secondary, .apple-button-icon {
-    padding: 12px 20px;
-    border: none;
+/* Contenido Principal (dentro de cada pestaña) */
+.main-content {
+    padding: 25px; /* Mismo padding horizontal que el header */
+    background-color: var(--apple-card-background); /* Fondo blanco */
+    padding-bottom: 40px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.category-main-view {
+    display: none; /* Ocultar por defecto, se mostrará con JS */
+}
+
+.category-main-view.active {
+    display: block;
+}
+
+/* Estilo de Tarjetas de Resumen y Listas */
+.summary-card, .categories-list-card {
+    background-color: var(--apple-light-gray-bg); /* Fondo gris claro */
+    border-radius: 12px;
+    padding: 20px; /* Ajusta el padding interno */
+    margin: 0 auto 25px auto; /* Centrado y margen inferior */
+    max-width: 400px; /* Reducir el ancho máximo */
+    box-shadow: 0 2px 8px var(--apple-shadow-light); /* Sombra sutil */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+
+.card-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--apple-text-dark);
+    margin-bottom: 8px;
+    text-transform: uppercase; /* General y Categorías en mayúsculas */
+}
+
+.card-total-amount {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: var(--apple-blue);
+    margin-top: 5px;
+}
+
+/* Cuadrícula de Categorías (en vista General) */
+.categories-list-card .card-title {
+    margin-bottom: 15px; /* Más espacio para el título */
+}
+
+#categories-grid {
+    display: flex; /* Usamos flex para una disposición en columna con flex-wrap */
+    flex-direction: column;
+    gap: 10px; /* Espacio entre los ítems de categoría */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.category-item {
+    background-color: var(--apple-card-background); /* Blanco */
     border-radius: 10px;
-    font-size: 1.05em;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Sombra interna sutil */
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.category-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Sombra más visible al hover */
+    transform: translateY(-1px); /* Ligero efecto de levantamiento */
+}
+
+.category-name-button {
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--apple-text-dark);
+    cursor: pointer;
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    padding: 0; /* Elimina padding por defecto del botón */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.category-item .edit-category-button,
+.category-item .delete-category-button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85em;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-    box-sizing: border-box;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--apple-card-background);
-    color: var(--apple-blue);
-    box-shadow: 0 2px 8px var(--apple-button-shadow);
+    border: none;
+    white-space: nowrap; /* Evita que el texto se rompa */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.apple-button {
+.category-item .edit-category-button {
+    background-color: var(--apple-orange);
+    color: white;
+    margin-right: 8px; /* Espacio entre botones */
+}
+.category-item .edit-category-button:hover {
+    background-color: #e68800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.category-item .delete-category-button {
+    background-color: var(--apple-red);
+    color: white;
+}
+.category-item .delete-category-button:hover {
+    background-color: #e03328;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Botón Añadir Nueva Categoría (en vista General) */
+.apple-button.full-width-button {
+    width: auto; /* AQUI ES */
+    max-width: 250px; /* AQUI ES */
+    padding: 10px 18px; /* AQUI ES */
+    margin: 0 auto; /* AQUI ES */
     background-color: var(--apple-blue);
     color: white;
-    box-shadow: 0 2px 8px rgba(10, 122, 255, 0.3);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95em; /* AQUI ES */
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--apple-blue-shadow);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.apple-button:hover {
+.apple-button.full-width-button:hover {
     background-color: #0068e6;
     box-shadow: 0 4px 12px rgba(10, 122, 255, 0.4);
 }
 
-.apple-button-secondary {
-    background-color: var(--apple-card-background);
-    color: var(--apple-blue);
-    box-shadow: 0 2px 8px var(--apple-button-shadow);
-}
 
-.apple-button-secondary:hover {
-    background-color: var(--apple-gray-light);
-    color: #0068e6;
-    box-shadow: 0 4px 12px var(--apple-button-hover-shadow);
-}
-
-.apple-button-icon {
-    background-color: var(--apple-card-background);
-    color: var(--apple-blue);
-    padding: 8px 12px;
-    font-size: 1.5em;
-    line-height: 1;
-    box-shadow: 0 2px 8px var(--apple-button-shadow);
-}
-
-.apple-button-icon:hover {
-    background-color: var(--apple-gray-light);
-    box-shadow: 0 4px 12px var(--apple-button-hover-shadow);
-}
-
-/* Estilo para el icono dentro del botón */
-.apple-button-icon svg {
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
-}
-
-
-/* Entradas de Formulario Apple */
-.apple-input {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border: 1px solid var(--apple-gray-light);
-    border-radius: 8px;
-    font-size: 16px; /* Asegura que el font-size sea 16px para evitar zoom en móvil */
-    box-sizing: border-box;
-    background-color: var(--apple-card-background);
-    color: var(--apple-text-dark);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.apple-input:focus {
-    border-color: var(--apple-blue);
-    box-shadow: 0 0 0 3px rgba(10, 122, 255, 0.2);
-    outline: none;
-}
-
-/* Mensajes de Error/Info */
-.error {
-    color: var(--apple-red);
-    font-weight: 500;
-    margin-top: 10px;
-    font-size: 0.9em;
-}
-
-.info {
-    color: var(--apple-green);
-    font-weight: 500;
-    margin-top: 10px;
-    font-size: 0.9em;
-}
-
-/* Contenido Principal (dentro de cada pestaña) */
-/* El padding interno de main-content se mantiene para el contenido */
-.main-content {
-    padding: 20px 25px;
-    background-color: var(--apple-card-background);
-    /* No border-radius aquí, ya lo tiene el app-container */
-    padding-bottom: 40px;
-    flex-grow: 1; /* Permite que el contenido ocupe el espacio restante */
-    overflow-y: auto; /* Permite scroll solo en el contenido si es necesario */
-}
-
-
-/* Sección de Encabezado de Lista (para el botón Añadir Gasto) */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.section-header h2 {
-    font-size: 1.6em;
-    color: var(--apple-text-dark);
-    margin: 0;
-}
-
-/* Resumen de Gastos */
-.summary-section {
-    margin-bottom: 30px;
+/* SECCIONES ESPECÍFICAS DE CATEGORÍAS (ADDITION) */
+.add-expense-section {
     padding: 15px 0;
-    border-top: 1px solid var(--apple-gray-light);
+    margin-bottom: 25px; /* Espacio debajo del botón */
+    text-align: center;
 }
 
-.summary-section h2 {
-    font-size: 1.6em;
-    color: var(--apple-text-dark);
-    margin-top: 0;
-    margin-bottom: 15px;
+.add-expense-category-button {
+    /* Hereda .apple-button.full-width-button */
 }
 
-.summary-item {
-    background-color: var(--apple-gray-light);
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.summary-item h3 {
-    margin: 0;
-    color: var(--apple-text-dark);
-    font-size: 1.1em;
-}
-
-.total-amount {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: var(--apple-blue);
-    display: block;
-    margin-top: 5px;
-}
-
-#category-totals-list li {
-    background-color: transparent;
-    border: none;
-    padding: 5px 0;
-    font-size: 0.95em;
-    color: var(--apple-text-dark);
-}
-
-/* Listas de Gastos */
-.expense-list-section {
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid var(--apple-gray-light);
-}
-
-.expense-list-section h2 {
-    font-size: 1.6em;
-    color: var(--apple-text-dark);
-    margin-top: 0;
-    margin-bottom: 15px;
-}
-
-ul {
+/* Lista de Gastos */
+.expense-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.expense-item, .category-list-item {
-    background-color: var(--apple-card-background);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 12px 15px;
-    margin-bottom: 8px;
+.expense-item {
+    background-color: var(--apple-light-gray-bg); /* Fondo gris claro */
     border-radius: 10px;
+    padding: 10px; /* AQUI ES */
+    margin-bottom: 8px; /* AQUI ES */
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-.no-expenses {
-    text-align: center;
-    color: var(--apple-gray-medium);
-    font-style: italic;
-    padding: 20px;
+    align-items: flex-start; /* Alinea arriba para el texto y botones */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Sombra sutil */
 }
 
 .expense-item-details {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-}
-
-.expense-item-details span {
-    font-size: 0.95em;
-    margin-bottom: 2px;
-    line-height: 1.3;
-    color: var(--apple-text-dark);
-}
-
-.expense-item-details span:last-child {
-    color: var(--apple-gray-medium);
+    text-align: left;
+    margin-right: 15px; /* Espacio a la derecha antes de los botones */
 }
 
 .expense-item-details strong {
-    font-size: 1.1em;
+    font-size: 1.1em; /* AQUI ES (tamaño de la cantidad) */
     color: var(--apple-text-dark);
+    margin-bottom: 4px; /* AQUI ES (espacio debajo de la cantidad) */
+    font-weight: bold; /* Asegura negrita */
+}
+
+.expense-item-details span {
+    font-size: 0.85em; /* AQUI ES (tamaño de descripción y fecha) */
+    color: var(--apple-medium-gray); /* Descripción y fecha en gris tenue */
+    line-height: 1.3;
 }
 
 .expense-actions {
     display: flex;
-    gap: 8px;
-    margin-top: 5px;
+    flex-direction: column; /* Botones apilados verticalmente */
+    gap: 8px; /* Espacio entre ellos */
+    flex-shrink: 0; /* Evita que los botones se encojan */
 }
 
-.apple-button-small {
-    padding: 6px 12px;
-    font-size: 0.85em;
+.expense-actions .edit-button,
+.expense-actions .delete-button {
+    padding: 8px 12px;
     border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
     white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: none;
-    background-color: var(--apple-card-background);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .expense-actions .edit-button {
@@ -435,66 +516,28 @@ ul {
 }
 .expense-actions .edit-button:hover {
     background-color: #e68800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
+
 .expense-actions .delete-button {
     background-color: var(--apple-red);
     color: white;
 }
 .expense-actions .delete-button:hover {
     background-color: #e03328;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Lista de gestión de categorías (dentro del modal) */
-.category-management-list {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 1px solid var(--apple-gray-light);
-    border-radius: 8px;
-    background-color: var(--apple-gray-light);
-}
-
-.category-management-list li {
-    background-color: var(--apple-card-background);
-    padding: 10px 15px;
-    border-bottom: 1px solid var(--apple-gray-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1em;
-}
-
-.category-management-list li:last-child {
-    border-bottom: none;
-}
-
-.category-management-list li span {
-    flex-grow: 1;
-    text-align: left;
-    font-weight: 500;
-    color: var(--apple-text-dark);
-}
-
-.category-management-list li button {
-    padding: 6px 12px;
-    font-size: 0.85em;
-    background-color: var(--apple-red);
-    color: white;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.category-management-list li button:hover {
-    background-color: #e03328;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+.no-expenses {
+    text-align: center;
+    color: var(--apple-medium-gray);
+    font-style: italic;
+    padding: 20px;
+    font-size: 1.1em;
 }
 
 
-/* Modales */
+/* Modales (General) */
 .modal {
     position: fixed;
     top: 0;
@@ -532,40 +575,92 @@ ul {
 }
 
 .modal-actions button {
-    width: 48%;
+    width: 48%; /* Para que los botones se dividan el espacio */
 }
+
+/* Inputs de Formulario Apple (ajustados a los colores) */
+.apple-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--apple-light-gray-bg); /* Borde sutil */
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: var(--apple-light-gray-bg); /* Fondo gris claro */
+    color: var(--apple-text-dark);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra interna sutil */
+}
+
+.apple-input:focus {
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(10, 122, 255, 0.2);
+    outline: none;
+    background-color: var(--apple-card-background); /* Blanco al enfocar */
+}
+
+/* Botones Apple genéricos (para modales) */
+.apple-button {
+    background-color: var(--apple-blue);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--apple-blue-shadow);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apple-button:hover {
+    background-color: #0068e6;
+    box-shadow: 0 4px 12px rgba(10, 122, 255, 0.4);
+}
+
+.apple-button-secondary {
+    background-color: var(--apple-light-gray-bg);
+    color: var(--apple-text-dark);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px var(--apple-shadow-light);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apple-button-secondary:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0 4px 12px var(--apple-shadow-medium);
+}
+
+/* Mensajes de feedback */
+.error {
+    color: var(--apple-red);
+    font-weight: 500;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.info {
+    color: var(--apple-blue); /* Usar azul para mensajes de éxito */
+    font-weight: 500;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
 
 /* Responsive para iPhone (media queries) */
 @media (max-width: 450px) {
-    body {
-        padding: 0; /* Asegura que el body no tenga padding */
-    }
-
-    /* El login-container mantiene su margen vertical */
-    #login-container {
-        padding: 30px 15px;
-        margin-top: 5vh;
-        margin-left: auto;
-        margin-right: auto;
-        width: 90%; /* Ajuste de ancho para móviles */
-        max-width: 400px; /* Sigue respetando el máximo */
-    }
-
-    #login-container h2 {
-        font-size: 1.8em;
-        margin-bottom: 15px;
-    }
-
-    #login-container input, #login-container #login-button {
-        max-width: none;
-    }
-
-    /* app-container también tendrá un ancho fijo en móviles */
     #app-container {
-        width: 95%; /* Mismo ancho relativo que el login */
-        max-width: 550px; /* El mismo max-width */
-        margin: 10px auto; /* Margen menor en móvil */
-        min-height: calc(100vh - 20px); /* Ajuste para el nuevo margen */
+        width: 100%;
+        margin: 0;
+        border-radius: 0; /* Sin bordes redondeados en pantallas pequeñas */
+        min-height: 100vh;
+        box-shadow: none; /* Sin sombra en la app completa */
     }
 
     .app-header {
@@ -576,82 +671,124 @@ ul {
         font-size: 1.6em;
     }
     
-    .app-header h1 .title-logo,
-    #login-container h2 .title-logo {
+    .title-logo {
         height: 1em;
-        vertical-align: middle;
     }
 
-    .apple-button, .apple-button-secondary, .apple-button-icon {
-        padding: 10px 15px;
-        font-size: 0.95em;
-        border-radius: 8px;
+    .header-actions {
+        flex-direction: row; /* Mantener en fila, ajustar espaciado */
+        gap: 8px;
     }
 
-    .apple-button-icon {
-        font-size: 1.3em;
-        padding: 6px 10px;
+    .logout-button {
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+
+    .export-button img {
+        height: 20px; /* Icono más pequeño en móvil */
+    }
+
+    .category-tabs-nav {
+        padding: 8px 15px;
+        top: 60px; /* Ajustar si el header cambia de altura */
     }
 
     .category-tab {
         padding: 6px 12px;
-        margin-right: 6px;
-        font-size: 0.9em;
-        border-radius: 6px;
-    }
-    
-    .category-tabs-nav {
-        padding: 8px 15px;
+        font-size: 0.85em;
     }
 
     .main-content {
         padding: 15px;
     }
 
-    .summary-section h2, .expense-list-section h2 {
-        font-size: 1.4em;
+    .summary-card, .categories-list-card {
+        padding: 18px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        max-width: 95%; /* Asegura que no sea demasiado grande en móvil */
     }
 
-    .total-amount {
-        font-size: 1.5em;
+    .card-title {
+        font-size: 1em;
     }
 
-    .expense-item {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 12px;
+    .card-total-amount {
+        font-size: 1.8em;
+    }
+
+    #categories-grid {
+        gap: 8px;
+    }
+
+    .category-item {
+        padding: 8px 12px;
         border-radius: 8px;
     }
 
+    .category-name-button {
+        font-size: 1em;
+    }
+
+    .category-item .edit-category-button,
+    .category-item .delete-category-button {
+        padding: 6px 10px;
+        font-size: 0.75em;
+    }
+
+    .apple-button.full-width-button {
+        padding: 10px 15px;
+        font-size: 0.95em;
+    }
+
+    .expense-item {
+        padding: 40; /* AQUI ES */
+        border-radius: 8px;
+        flex-wrap: wrap; /* Permite que los elementos se envuelvan si no hay espacio */
+        align-items: center; /* Alinea centrado verticalmente si hay envoltura */
+        margin-bottom: 8px; /* AQUI ES */
+    }
+
     .expense-item-details {
+        width: 100%; /* Ocupa todo el ancho si se envuelve */
         margin-bottom: 8px;
-        width: 100%;
+        text-align: left;
+    }
+
+    .expense-item-details strong {
+        font-size: 0em; /* AQUI ES (tamaño de la cantidad en móvil) */
+    }
+
+    .expense-item-details span {
+        font-size: 0.8em; /* AQUI ES (tamaño de descripción y fecha en móvil) */
     }
 
     .expense-actions {
+        flex-direction: row; /* Botones de gastos en fila en móvil */
         width: 100%;
-        justify-content: flex-end;
-        margin-top: 0;
+        justify-content: flex-end; /* Alinea a la derecha */
+        gap: 6px;
     }
 
-    .apple-button-small {
-        padding: 5px 10px;
-        font-size: 0.8em;
-        width: 49%;
+    .expense-actions .edit-button,
+    .expense-actions .delete-button {
+        padding: 6px 10px;
+        font-size: 0.75em;
+        flex-grow: 1; /* Para que ocupen el espacio disponible */
     }
 
     .modal-content {
         width: 90%;
         padding: 20px;
+        border-radius: 10px;
     }
     .modal-content h2 {
         font-size: 1.5em;
     }
     .modal-actions button {
         width: 100%;
-    }
-    .category-management-list li button {
-        padding: 5px 10px;
-        font-size: 0.75em;
+        font-size: 0.9em;
+        padding: 10px 15px;
     }
 }
