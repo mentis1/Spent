@@ -13,12 +13,12 @@
     --apple-blue-shadow: rgba(10, 122, 255, 0.3); /* Sombra azul para elementos activos */
 
     /* Nuevas variables de sombra para mayor control */
-    --apple-strong-shadow: rgba(0, 0, 0, 0.2);
-    --apple-subtle-shadow: rgba(0, 0, 0, 0.1);
+    --apple-strong-shadow: rgba(7, 0, 0, 0.4);
+    --apple-subtle-shadow: rgba(0, 7, 0, 0.5);
 
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
     --logo-size-login: 1.2em; /* Tamaño del logo en la pantalla de login (restaurado) */
-    --logo-size-app: 2.6em;   /* Tamaño del logo en el encabezado de la app (más grande) */
+    --logo-size-app: 2.4em;   /* Tamaño del logo en el encabezado de la app (más grande) */
 }
 
 /* Estilos Generales */
