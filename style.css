@@ -688,7 +688,8 @@ body {
     }
 
     .app-header {
-        padding: 20px; /* Even larger padding */
+    padding: 30px 50px; /* Grande */
+}
     }
 
     .app-header h1 {
