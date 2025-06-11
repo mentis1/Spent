@@ -951,3 +951,15 @@ body {
     width: auto;
     min-width: 120px; /* Ancho mínimo para el botón "Cerrar" */
 }
+/* Estilos individuales para cada imagen */
+#info-modal .info-images img {
+    /* --- MODIFICA ESTA LÍNEA PARA HACERLAS MÁS PEQUEÑAS --- */
+    max-width: 100%; /* Ejemplo: las hará ocupar el 70% del ancho del modal */
+    /* O si prefieres un tamaño fijo, usa esto en su lugar: */
+    /* max-width: 250px; */ /* Ejemplo: las limitará a un máximo de 250 píxeles de ancho */
+
+    height: auto; /* ¡Mantén siempre esto para que no se deformen! */
+    border-radius: 10px;
+    box-shadow: var(--apple-shadow-light);
+    display: block;
+}
