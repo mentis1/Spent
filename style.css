@@ -848,7 +848,7 @@ body {
     transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
     
     /* --- AÑADE O MODIFICA ESTAS LÍNEAS PARA EL SOMBREADO --- */
-    box-shadow: 0px 10px 50px rgba(179, 179, 179, 0.4); /* Sombra de hover aún más grande y pronunciada */
+    box-shadow: 0px 10px 10px rgba(179, 179, 179, 0.4); /* Sombra de hover aún más grande y pronunciada */
 }
 
 #Invitar:hover {
@@ -860,4 +860,94 @@ body {
     filter: brightness(0.9); /* Oscurecer al hacer clic */
     transform: scale(0.98);
     box-shadow: var(--apple-subtle-shadow); /* Sombra más sutil al hacer clic */
+}
+/* Estilos para el botón de info específico */
+#Info {
+    background-color: #ffffff; /* Color verde específico */
+    color: rgb(0, 0, 0); /* Texto blanco para contraste */
+    border-radius: 10px; /* Mantener los bordes redondeados estilo Apple */
+    padding: 12px 25px; /* Relleno para que sea cómodo de pulsar */
+    font-size: 1.1em; /* Un poco más grande para destacar */
+    display: block; /* Para que ocupe su propia línea y se pueda centrar con margin auto */
+    margin: 20px auto; /* Centra el botón horizontalmente y añade un margen superior/inferior */
+    width: fit-content; /* El ancho se ajusta al contenido del botón */
+    max-width: 90%; /* Evita que sea demasiado ancho en pantallas pequeñas */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    
+    /* --- AÑADE O MODIFICA ESTAS LÍNEAS PARA EL SOMBREADO --- */
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4); /* Sombra de hover aún más grande y pronunciada */
+}
+
+#Info:hover {
+    filter: brightness(1.1); /* Ligero brillo al pasar el ratón */
+    box-shadow: 0px 10px 50px rgba(179, 179, 179, 0.4); /* Sombra de hover aún más grande y pronunciada */
+}
+
+#Info:active {
+    filter: brightness(0.9); /* Oscurecer al hacer clic */
+    transform: scale(0.98);
+    box-shadow: var(--apple-subtle-shadow); /* Sombra más sutil al hacer clic */
+}
+/* --- Nuevo Modal de Información --- */
+#info-modal {
+    /* Estas propiedades son comunes a todos tus modales, pero las incluimos para asegurar */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo semi-transparente */
+    display: flex; /* Para centrar el contenido */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Asegura que esté por encima de casi todo */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(5px); /* Compatibilidad Safari */
+}
+
+/* Ocultar el modal por defecto */
+#info-modal.hidden {
+    display: none;
+}
+
+#info-modal .modal-content {
+    /* Estilos del contenedor interno del modal, similar a tus tarjetas Apple */
+    padding: 30px;
+    max-width: 380px;
+    width: 90%; /* Ancho responsivo */
+    box-sizing: border-box;
+    text-align: left;
+    background-color: var(--apple-card-background); /* Blanco de tu tema Apple */
+    border-radius: 15px;
+    box-shadow: var(--apple-shadow-medium);
+}
+
+#info-modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    text-align: center;
+    color: var(--apple-text-dark);
+}
+
+#info-modal p {
+    font-size: 1.05em;
+    line-height: 1.6;
+    color: var(--apple-text-dark);
+    text-align: center; /* Centrar el texto dentro del modal */
+    margin-bottom: 20px; /* Espacio antes del botón */
+}
+
+#info-modal .modal-actions {
+    display: flex;
+    justify-content: center; /* Centrar el botón de cerrar */
+    gap: 10px;
+    margin-top: 25px;
+}
+
+#info-modal .modal-actions .apple-button {
+    flex-grow: 0; /* Evita que el botón se estire a todo el ancho */
+    width: auto;
+    min-width: 120px; /* Ancho mínimo para el botón "Cerrar" */
 }

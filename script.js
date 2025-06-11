@@ -785,5 +785,43 @@ https://mentis1.github.io/Spent/
 if (nuevoBotonInvitar) {
     nuevoBotonInvitar.addEventListener('click', invitarViaWhatsApp);
 }
+// --- INICIO: Código para el botón y modal de Información "Info" ---
 
+// Referencias del DOM para el botón de Info y el modal
+const infoButton = document.getElementById('Info'); // Asegúrate que tu botón en HTML tiene id="Info"
+const infoModal = document.getElementById('info-modal');
+const closeInfoButton = document.getElementById('close-info-button');
+const infoTextContent = document.getElementById('info-text-content'); // Referencia al párrafo del texto
+
+// Función para abrir el modal de información
+function openInfoModal() {
+    infoModal.classList.remove('hidden'); // Remueve la clase 'hidden' para mostrar el modal
+    // Opcional: Si quieres cambiar el texto dinámicamente, puedes hacerlo aquí
+    // infoTextContent.textContent = "¡Este es un mensaje actualizado al abrir!";
+}
+
+// Función para cerrar el modal de información
+function closeInfoModal() {
+    infoModal.classList.add('hidden'); // Añade la clase 'hidden' para ocultar el modal
+}
+
+// Añadir Event Listeners
+if (infoButton) { // Comprueba si el botón existe antes de añadir el listener
+    infoButton.addEventListener('click', openInfoModal);
+}
+
+if (closeInfoButton) { // Comprueba si el botón de cerrar existe
+    closeInfoButton.addEventListener('click', closeInfoModal);
+}
+
+// Cerrar el modal si se hace clic fuera del contenido (en el fondo oscuro)
+if (infoModal) { // Comprueba si el modal existe
+    infoModal.addEventListener('click', (e) => {
+        // Si el clic fue directamente en el fondo del modal y no en su contenido interno
+        if (e.target === infoModal) { 
+            closeInfoModal();
+        }
+    });
+}
+// --- FIN: Código para el botón y modal de Información "Info" ---
 // --- FIN: Código para el botón de Invitar (el nuevo, con ID "Invitar") ---
