@@ -3,7 +3,7 @@
     --apple-blue: #0a7aff; /* Azul primario */
     --apple-red: #ff3b2f; /* Rojo para eliminar/logout */
     --apple-orange: #ff9501; /* Naranja para editar */
-    --apple-light-gray-bg: #f2f2f2; /* Fondo muy claro, casi blanco */
+    --apple-light-gray-bg: #ffffff; /* Fondo muy claro, casi blanco */
     --apple-medium-gray: #8f8e94; /* Gris medio para texto secundario */
     --apple-card-background: #ffffff; /* Blanco para fondos de tarjetas */
     --apple-text-dark: #1c1c1e; /* Texto oscuro */
@@ -17,8 +17,8 @@
     --apple-subtle-shadow: rgba(0, 0, 0, 0.4);
 
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
-    --logo-size-login: 1.2em; /* Tamaño del logo en la pantalla de login (restaurado) */
-    --logo-size-app: 2.1em;   /* Tamaño del logo en el encabezado de la app (más grande) */
+    --logo-size-login: 1.5em; /* Tamaño del logo en la pantalla de login (restaurado) */
+    --logo-size-app: 2.8em;   /* Tamaño del logo en el encabezado de la app (más grande) */
 }
 
 /* Estilos Generales */
