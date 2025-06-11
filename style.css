@@ -833,3 +833,31 @@ body {
         padding: 14px 20px; /* Even larger padding */
     }
 }
+/* Estilos para el botón de Invitar específico */
+#Invitar {
+    background-color: #1cc93a; /* Color verde específico */
+    color: white; /* Texto blanco para contraste */
+    border-radius: 10px; /* Mantener los bordes redondeados estilo Apple */
+    padding: 12px 25px; /* Relleno para que sea cómodo de pulsar */
+    font-size: 1.1em; /* Un poco más grande para destacar */
+    display: block; /* Para que ocupe su propia línea y se pueda centrar con margin auto */
+    margin: 20px auto; /* Centra el botón horizontalmente y añade un margen superior/inferior */
+    width: fit-content; /* El ancho se ajusta al contenido del botón */
+    max-width: 90%; /* Evita que sea demasiado ancho en pantallas pequeñas */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    
+    /* --- AÑADE O MODIFICA ESTAS LÍNEAS PARA EL SOMBREADO --- */
+    box-shadow: 0px 10px 50px rgba(179, 179, 179, 0.4); /* Sombra de hover aún más grande y pronunciada */
+}
+
+#Invitar:hover {
+    filter: brightness(1.1); /* Ligero brillo al pasar el ratón */
+    box-shadow: 0px 10px 50px rgba(179, 179, 179, 0.4); /* Sombra de hover aún más grande y pronunciada */
+}
+
+#Invitar:active {
+    filter: brightness(0.9); /* Oscurecer al hacer clic */
+    transform: scale(0.98);
+    box-shadow: var(--apple-subtle-shadow); /* Sombra más sutil al hacer clic */
+}

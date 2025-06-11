@@ -751,3 +751,39 @@ confirmDeleteModal.addEventListener('click', (e) => {
 document.querySelector('.category-tab[data-category-name="General"]').addEventListener('click', () => {
     activateTab('General');
 });
+// --- INICIO: Código para el botón de Invitar (el nuevo, con ID "Invitar") ---
+
+// 1. Obtener referencia al botón del DOM (usando el ID 'Invitar')
+const nuevoBotonInvitar = document.getElementById('Invitar');
+
+// 2. Función para abrir WhatsApp con el mensaje predeterminado
+function invitarViaWhatsApp() {
+    // Define el mensaje que se enviará por WhatsApp con saltos de línea
+    // ¡IMPORTANTE! Reemplaza [LA_URL_DE_TU_APP] con la URL real donde está alojada tu aplicación web.
+    const message = `¡Hola!, soy Diego
+
+¡Te invito a usar esta web-app para contabilizar tus gastos!
+
+🔒Los gastos se almacenan localmente en tu dispositivo, por lo que es totalmente segura. 🔒
+
+https://mentis1.github.io/Spent/
+
+🤫El código de acceso es 2580🤫`;
+
+    // Codifica el mensaje completo (esto convertirá los saltos de línea a %0A automáticamente)
+    const encodedMessage = encodeURIComponent(message);
+
+    // Construye la URL para abrir WhatsApp con el mensaje
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+
+    // Abre la URL de WhatsApp en una nueva pestaña/ventana
+    window.open(whatsappUrl, '_blank');
+}
+
+// 3. Añadir el Event Listener al nuevo botón de Invitar
+// Solo si el botón existe en el DOM (para evitar errores si el HTML aún no carga o el ID es incorrecto)
+if (nuevoBotonInvitar) {
+    nuevoBotonInvitar.addEventListener('click', invitarViaWhatsApp);
+}
+
+// --- FIN: Código para el botón de Invitar (el nuevo, con ID "Invitar") ---
