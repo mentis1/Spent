@@ -1,5 +1,5 @@
 // --- Constantes y Variables Globales ---
-const CORRECT_PIN = "1515"; // Contraseña PIN
+const CORRECT_PIN = "2580"; // Contraseña PIN
 const EXPENSES_STORAGE_KEY = 'spentAppExpenses'; // Cambiado a 'spentAppExpenses'
 const CATEGORIES_STORAGE_KEY = 'spentAppCategories'; // Cambiado a 'spentAppCategories'
 
