@@ -688,7 +688,7 @@ body {
     }
 
     .app-header {
-        padding: 30px 50px; /* Grande */
+        padding: 20px 20px; /* Grande */
     } /* Moved this closing brace to fix syntax error */
 
     .app-header h1 {
