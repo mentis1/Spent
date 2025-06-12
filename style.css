@@ -863,7 +863,7 @@ body {
 }
 /* Estilos para el botón de info específico */
 #Info {
-    background-color: #ffffff; /* Color verde específico */
+    background-color: #ffffff; /* Color blanco específico */
     color: rgb(0, 0, 0); /* Texto blanco para contraste */
     border-radius: 10px; /* Mantener los bordes redondeados estilo Apple */
     padding: 12px 25px; /* Relleno para que sea cómodo de pulsar */
@@ -904,6 +904,7 @@ body {
     z-index: 2000; /* Asegura que esté por encima de casi todo */
     backdrop-filter: blur(5px); /* Efecto de desenfoque */
     -webkit-backdrop-filter: blur(5px); /* Compatibilidad Safari */
+    font-size: 85%;
 }
 
 /* Ocultar el modal por defecto */
@@ -926,7 +927,7 @@ body {
 #info-modal h2 {
     margin-top: 0;
     margin-bottom: 20px;
-    font-size: 1.6em;
+    font-size: 1.4em;
     text-align: center;
     color: var(--apple-text-dark);
 }
@@ -954,12 +955,12 @@ body {
 /* Estilos individuales para cada imagen */
 #info-modal .info-images img {
     /* --- MODIFICA ESTA LÍNEA PARA HACERLAS MÁS PEQUEÑAS --- */
-    max-width: 100%; /* Ejemplo: las hará ocupar el 70% del ancho del modal */
+    max-width: 70%; /* Ejemplo: las hará ocupar el 70% del ancho del modal */
     /* O si prefieres un tamaño fijo, usa esto en su lugar: */
     /* max-width: 250px; */ /* Ejemplo: las limitará a un máximo de 250 píxeles de ancho */
-
     height: auto; /* ¡Mantén siempre esto para que no se deformen! */
     border-radius: 10px;
     box-shadow: var(--apple-shadow-light);
-    display: block;
+    display: block; /* Esto es crucial para que margin: auto funcione */
+    margin: 0 auto; /* Centra la imagen horizontalmente */
 }
