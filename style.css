@@ -340,7 +340,7 @@ body {
 }
 
 /* Estilo de Tarjetas de Resumen y Listas */
-.summary-card, .categories-list-card {
+.summary-card, .categories-list-card, .chart-card { /* Añadido .chart-card */
     background-color: var(--apple-light-gray-bg);
     border-radius: 18px; /* Even larger border-radius */
     padding: 25px; /* Even larger padding */
@@ -677,6 +677,26 @@ body {
     font-size: 1.1em; /* Even larger font size */
 }
 
+/* Estilos para el contenedor del gráfico */
+.chart-card {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* Limita el ancho del gráfico */
+    margin: 20px auto 0 auto; /* Centrar y añadir margen superior */
+    height: 300px; /* Altura fija para el contenedor del canvas */
+}
+
+.chart-container canvas {
+    display: block; /* Elimina espacio extra debajo del canvas */
+    width: 100% !important; /* Asegura que el canvas ocupe todo el ancho disponible */
+    height: 100% !important; /* Asegura que el canvas ocupe toda la altura disponible */
+}
+
 /* Responsive para iPhone (media queries) */
 @media (max-width: 450px) {
     #app-container {
@@ -733,7 +753,7 @@ body {
         padding: 25px; /* Adjusted padding for better fit on small screens */
     }
 
-    .summary-card, .categories-list-card {
+    .summary-card, .categories-list-card, .chart-card { /* Añadido .chart-card */
         padding: 18px; /* Even larger padding */
         margin-bottom: 25px; /* Even larger margin */
         border-radius: 15px; /* Even larger border-radius */

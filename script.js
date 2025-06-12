@@ -27,6 +27,11 @@ const categoriesGrid = document.getElementById('categories-grid');
 const addNewCategoryButton = document.getElementById('add-new-category-button'); // Botón de añadir categoría en la vista General
 const templateCategoryView = document.getElementById('template-category-view'); // Plantilla para las vistas de categorías
 
+// Referencias del DOM para el gráfico
+const expensesPieChartCanvas = document.getElementById('expensesPieChart');
+const noChartDataMessage = document.getElementById('no-chart-data-message');
+let expensesChart = null; // Variable para almacenar la instancia del gráfico
+
 // Modales
 const expenseModal = document.getElementById('expense-modal');
 const expenseModalTitle = document.getElementById('expense-modal-title');
@@ -104,6 +109,10 @@ function handleLogout() {
     passwordInput.value = ''; // Limpiar el campo de PIN
     loginMessage.textContent = ''; // Limpiar cualquier mensaje
     activeCategoryName = 'General'; // Resetear la categoría activa
+    if (expensesChart) {
+        expensesChart.destroy(); // Destruir el gráfico al cerrar sesión
+        expensesChart = null;
+    }
 }
 
 function checkAuth() {
@@ -166,6 +175,7 @@ function loadAppContent() {
     renderAllCategoryViews(); // Renderiza todas las vistas de categorías (ocultas)
     renderGeneralView(); // Renderiza y activa la vista "General" por defecto
     activateTab(activeCategoryName); // Activa la pestaña General al inicio
+    updatePieChart(); // Actualizar el gráfico al cargar la app
 }
 
 function renderCategoryTabs() {
@@ -264,6 +274,7 @@ function renderGeneralView() {
             });
         });
     }
+    updatePieChart(); // Actualizar el gráfico después de renderizar la vista general
 }
 
 function renderAllCategoryViews() {
@@ -371,6 +382,99 @@ function calculateTotalExpensesByCategory(categoryName) {
         .reduce((total, expense) => total + parseFloat(expense.amount), 0);
 }
 
+// --- Lógica del Gráfico de Tarta ---
+function updatePieChart() {
+    // Destruir el gráfico existente si lo hay
+    if (expensesChart) {
+        expensesChart.destroy();
+    }
+
+    const categoryTotals = {};
+    expenses.forEach(expense => {
+        if (expense.category !== 'General') { // Excluir la categoría General del gráfico de tarta
+            if (!categoryTotals[expense.category]) {
+                categoryTotals[expense.category] = 0;
+            }
+            categoryTotals[expense.category] += parseFloat(expense.amount);
+        }
+    });
+
+    const labels = Object.keys(categoryTotals);
+    const data = Object.values(categoryTotals);
+
+    // Si no hay datos (o solo la categoría General), mostrar mensaje
+    if (labels.length === 0 || data.every(amount => amount === 0)) {
+        expensesPieChartCanvas.classList.add('hidden');
+        noChartDataMessage.classList.remove('hidden');
+        return;
+    } else {
+        expensesPieChartCanvas.classList.remove('hidden');
+        noChartDataMessage.classList.add('hidden');
+    }
+
+    // Colores para el gráfico (se pueden personalizar o generar dinámicamente)
+    const backgroundColors = [
+        '#0a7aff', // blue
+        '#ff9501', // orange
+        '#34c759', // green
+        '#5856d6', // indigo
+        '#af52de', // purple
+        '#ff3b2f', // red
+        '#ffcc00', // yellow
+        '#a2845e', // brown
+        '#646468', // gray
+        '#007aff', // darker blue
+    ];
+    // Asegurar que haya suficientes colores, si no, se repiten
+    const colors = labels.map((_, i) => backgroundColors[i % backgroundColors.length]);
+
+
+    // Crear el gráfico de tarta
+    const ctx = expensesPieChartCanvas.getContext('2d');
+    expensesChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right', // Posiciona la leyenda a la derecha
+                    labels: {
+                        color: 'var(--apple-text-dark)', // Color de texto de la leyenda
+                        font: {
+                            size: 14 // Tamaño de fuente de la leyenda
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += formatAmount(context.parsed);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
 // --- Modales de Categorías ---
 function openAddCategoryModal() {
     addCategoryModal.classList.remove('hidden');
@@ -412,6 +516,7 @@ function addNewCategory() {
     renderCategoryTabs(); // Actualizar las pestañas
     renderGeneralView(); // Actualizar la vista general para que aparezca la nueva categoría
     renderAllCategoryViews(); // Asegura que la nueva vista de categoría esté disponible
+    updatePieChart(); // Actualizar el gráfico después de añadir una categoría
 
     setTimeout(() => {
         closeAddCategoryModal();
@@ -422,7 +527,18 @@ function openEditCategoryModal(categoryId) {
     categoryToEdit = categories.find(cat => cat.id === categoryId);
     if (categoryToEdit) {
         if (categoryToEdit.name === "General") {
-            alert("La categoría 'General' no puede ser editada.");
+            // Reemplazar alert con un mensaje modal o dentro de la misma UI si es posible
+            // Para este ejemplo, lo dejaremos como un simple 'alert' ya que no hay un modal de mensajes general.
+            const editCategoryMessageElement = document.getElementById('edit-category-message');
+            editCategoryMessageElement.textContent = "La categoría 'General' no puede ser editada.";
+            editCategoryMessageElement.classList.add('error');
+            editCategoryMessageElement.classList.remove('info');
+            // Cierra el modal de edición después de mostrar el mensaje de error
+            setTimeout(() => {
+                editCategoryModal.classList.add('hidden');
+                editCategoryMessageElement.textContent = '';
+                categoryToEdit = null;
+            }, 2000); // Muestra el mensaje por 2 segundos
             return;
         }
         editCategoryInput.value = categoryToEdit.name;
@@ -483,6 +599,7 @@ function confirmEditCategory() {
     renderGeneralView();
     renderAllCategoryViews(); // Esto recreará las vistas con los nuevos nombres
     activateTab(newCategoryName); // Activar la categoría renombrada
+    updatePieChart(); // Actualizar el gráfico después de editar una categoría
 
     setTimeout(() => {
         closeEditCategoryModal();
@@ -593,6 +710,7 @@ function handleConfirmExpense() {
     // Actualizar las vistas después de añadir/editar
     renderGeneralView(); // Siempre actualiza la vista general
     renderExpensesForSpecificCategoryView(activeCategoryName); // Actualiza la vista de la categoría activa
+    updatePieChart(); // Actualizar el gráfico después de añadir/editar un gasto
 
     setTimeout(() => {
         closeExpenseModal();
@@ -619,8 +737,16 @@ function handleDeleteConfirm() {
     if (deleteActionType === 'category') {
         const category = categories.find(cat => cat.id === deleteTargetId);
         if (category && category.name === "General") {
-            alert("No se puede eliminar la categoría 'General'.");
-            closeConfirmDeleteModal();
+            // Reemplazar alert con un mensaje modal o dentro de la misma UI si es posible
+            // Para este ejemplo, lo dejaremos como un simple 'alert' ya que no hay un modal de mensajes general.
+            const confirmDeleteMessageElement = document.getElementById('confirm-delete-message');
+            confirmDeleteMessageElement.textContent = "No se puede eliminar la categoría 'General'.";
+            confirmDeleteMessageElement.classList.add('error');
+            confirmDeleteMessageElement.classList.remove('info');
+            setTimeout(() => {
+                closeConfirmDeleteModal();
+                confirmDeleteMessageElement.textContent = '';
+            }, 2000); // Muestra el mensaje por 2 segundos
             return;
         }
         deleteCategory(deleteTargetId);
@@ -647,6 +773,7 @@ function deleteCategory(categoryId) {
     renderGeneralView();
     renderAllCategoryViews(); // Esto recreará las vistas
     activateTab('General'); // Vuelve siempre a la vista General
+    updatePieChart(); // Actualizar el gráfico después de eliminar una categoría
 }
 
 function deleteExpense(expenseId) {
@@ -659,6 +786,7 @@ function deleteExpense(expenseId) {
     // Actualizar la vista de la categoría actual y la General
     renderGeneralView();
     renderExpensesForSpecificCategoryView(activeCategoryName);
+    updatePieChart(); // Actualizar el gráfico después de eliminar un gasto
 }
 
 // --- Funcionalidad de Exportar a .txt (simulando formato DOCX) ---

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="iconospentios.png">
     <link rel="apple-touch-icon" href="iconospentios.png">
+    <!-- Incluir Chart.js desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -56,12 +58,19 @@
                     <span class="card-title">GENERAL</span>
                     <span class="card-total-amount" id="general-total-amount">0.00€</span>
                 </div>
-
                 <div class="categories-list-card">
                     <span class="card-title">Categorías</span>
                     <div id="categories-grid">
                         </div>
                     <button id="add-new-category-button" class="apple-button full-width-button">Añadir nueva categoría</button>
+                </div>
+                <!-- Nuevo contenedor para el gráfico de tarta -->
+                <div class="chart-card">
+                    <span class="card-title">Gastos por Categoría</span>
+                    <div class="chart-container">
+                        <canvas id="expensesPieChart"></canvas>
+                    </div>
+                    <p id="no-chart-data-message" class="info hidden">No hay gastos en categorías para mostrar en el gráfico.</p>
                 </div>
                 <button id="Invitar" class="apple-button-secondary">
                 Recomendar a <br> un amigo <img src="was.png" class="button-icon">
