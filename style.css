@@ -1,5 +1,6 @@
 /* Variables de color estilo Apple (ajustadas a los colores proporcionados) */
 :root {
+    /* -- Tema Claro (Valores por defecto) -- */
     --apple-blue: #0a7aff; /* Azul primario */
     --apple-red: #ff3b2f; /* Rojo para eliminar/logout */
     --apple-orange: #ff9501; /* Naranja para editar */
@@ -19,6 +20,63 @@
     /* NUEVAS VARIABLES PARA TAMAÑO DEL LOGO */
     --logo-size-login: 1.5em; /* Tamaño del logo en la pantalla de login (restaurado) */
     --logo-size-app: 2.8em;   /* Tamaño del logo en el encabezado de la app (más grande) */
+}
+
+/* -- Tema Oscuro -- */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --apple-blue: #2997ff; /* Un azul un poco más brillante para oscuro */
+        --apple-red: #ff453a; /* Rojo para oscuro */
+        --apple-orange: #ff9f0a; /* Naranja para oscuro */
+        --apple-light-gray-bg: #1c1c1e; /* Fondo oscuro casi negro */
+        --apple-medium-gray: #8e8e93; /* Gris medio claro para texto secundario */
+        --apple-card-background: #2c2c2e; /* Fondo de tarjetas más oscuro */
+        --apple-text-dark: #f2f2f7; /* Texto claro */
+        --apple-shadow-light: rgba(0, 0, 0, 0.3); /* Sombra sutil en oscuro */
+        --apple-shadow-medium: rgba(0, 0, 0, 0.4); /* Sombra para botones en oscuro */
+        --apple-shadow-strong: rgba(0, 0, 0, 0.5); /* Sombra para hover/active en oscuro */
+        --apple-blue-shadow: rgba(41, 151, 255, 0.4); /* Sombra azul para elementos activos en oscuro */
+
+        --apple-strong-shadow: rgba(0, 0, 0, 0.5);
+        --apple-subtle-shadow: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Ajustes específicos para elementos que podrían necesitar un retoque en el modo oscuro */
+    .keypad-button {
+        box-shadow: 0 3px 10px var(--apple-shadow-medium); /* Asegura que la sombra se ajuste */
+    }
+
+    .keypad-button:active {
+        background-color: var(--apple-card-background); /* Mantener la consistencia con el fondo de tarjeta oscuro */
+        box-shadow: 0 2px 6px var(--apple-shadow-light);
+    }
+
+    /* Invertir colores de sombra para #Invitar y #Info para que sean visibles en fondo oscuro */
+    #Invitar {
+        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4); /* Sombra más oscura */
+    }
+
+    #Invitar:hover {
+        box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.6); /* Sombra más pronunciada para hover */
+    }
+
+    #Invitar:active {
+        box-shadow: var(--apple-shadow-strong); /* Sombra más sutil al hacer clic */
+    }
+
+    #Info {
+        background-color: var(--apple-card-background); /* Fondo de tarjeta oscuro */
+        color: var(--apple-text-dark); /* Texto claro */
+        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4); /* Sombra oscura */
+    }
+
+    #Info:hover {
+        box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.6); /* Sombra más pronunciada para hover */
+    }
+
+    #Info:active {
+        box-shadow: var(--apple-shadow-strong); /* Sombra más sutil al hacer clic */
+    }
 }
 
 /* Estilos Generales */
@@ -938,7 +996,7 @@ body {
     max-width: 380px;
     width: 90%; /* Ancho responsivo */
     box-sizing: border-box;
-    text-align: left;
+    text-align: justify;
     background-color: var(--apple-card-background); /* Blanco de tu tema Apple */
     border-radius: 15px;
     box-shadow: var(--apple-shadow-medium);
@@ -992,13 +1050,3 @@ body {
     margin-right: 5px; /* Espacio a la derecha del icono si está a la izquierda del texto */
     /* Si lo pusiste a la derecha del texto, usarías margin-left: 5px; */
 }
-
-/* Si el botón usa flexbox, podrías ajustar el espaciado con gap en el botón */
-/* .apple-button-secondary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px; // Esto se encargaría del espacio automáticamente
-} */
-
-/* Si no usas flexbox en el botón, el margin-right/left en .button-icon es la forma más sencilla */

@@ -888,9 +888,9 @@ const nuevoBotonInvitar = document.getElementById('Invitar');
 function invitarViaWhatsApp() {
     // Define el mensaje que se enviará por WhatsApp con saltos de línea
     // ¡IMPORTANTE! Reemplaza [LA_URL_DE_TU_APP] con la URL real donde está alojada tu aplicación web.
-    const message = `¡Hola!, soy Diego
+    const message = `¡Hola!, soy Diego.
 
-¡Te invito a usar esta web-app para contabilizar tus gastos!
+¡Te invito a usar esta web-app que he creado para contabilizar tus gastos!
 
 🔒Los gastos se almacenan localmente en tu dispositivo, por lo que es totalmente segura. 🔒
 
