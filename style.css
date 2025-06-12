@@ -964,3 +964,21 @@ body {
     display: block; /* Esto es crucial para que margin: auto funcione */
     margin: 0 auto; /* Centra la imagen horizontalmente */
 }
+/* Estilos para iconos dentro de botones */
+.button-icon {
+    height: 1.2em; /* Hace que el icono tenga una altura relativa al tamaño de la fuente del botón */
+    width: auto; /* Mantiene la proporción */
+    vertical-align: middle; /* Alinea el icono verticalmente con el texto */
+    margin-right: 5px; /* Espacio a la derecha del icono si está a la izquierda del texto */
+    /* Si lo pusiste a la derecha del texto, usarías margin-left: 5px; */
+}
+
+/* Si el botón usa flexbox, podrías ajustar el espaciado con gap en el botón */
+/* .apple-button-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px; // Esto se encargaría del espacio automáticamente
+} */
+
+/* Si no usas flexbox en el botón, el margin-right/left en .button-icon es la forma más sencilla */
