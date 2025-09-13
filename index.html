@@ -1,17 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Spent</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="iconospentios.png">
     <link rel="apple-touch-icon" href="iconospentios.png">
-    <!-- Incluir Chart.js desde un CDN -->
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Firebase (compat versión, expone global `firebase`) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Tu configuración (la misma que nos diste)
+      const firebaseConfig = {
+        apiKey: "AIzaSyBLJWA3tkQUGqwJad75XQp7VV4t5oiK-dk",
+        authDomain: "spent-original.firebaseapp.com",
+        projectId: "spent-original",
+        storageBucket: "spent-original.firebasestorage.app",
+        messagingSenderId: "495334490672",
+        appId: "1:495334490672:web:023ae00e9c9d702f3263f5",
+        measurementId: "G-EMQLDSZ3ND"
+      };
+
+      // Inicializa Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+    </script>
 </head>
 <body>
 
+    <!-- --- TU HTML ORIGINAL (sin cambios funcionales) --- -->
     <div id="login-container" class="apple-card">
         <h2 class="login-title"><img src="spendsalternativo.png" alt="Spent Logo" class="title-logo"> Spent</h2>
         <input type="password" id="password-input" placeholder="Introduce PIN" maxlength="4" readonly>
@@ -64,7 +89,6 @@
                         </div>
                     <button id="add-new-category-button" class="apple-button full-width-button">Añadir nueva categoría</button>
                 </div>
-                <!-- Nuevo contenedor para el gráfico de tarta -->
                 <div class="chart-card">
                     <span class="card-title">Gastos por Categoría</span>
                     <div class="chart-container">
@@ -95,6 +119,7 @@
         </main>
     </div>
 
+    <!-- Modales (mantengo tu HTML tal cual) -->
     <div id="expense-modal" class="modal hidden">
         <div class="modal-content apple-card">
             <h2 id="expense-modal-title">Añadir Nuevo Gasto</h2>
@@ -146,6 +171,7 @@
             </div>
         </div>
     </div>
+
     <div id="info-modal" class="modal hidden">
         <div class="modal-content apple-card">
             <h2>Información</h2>
@@ -167,6 +193,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Tu script principal -->
     <script src="script.js"></script>
 </body>
 </html>
