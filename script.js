@@ -1,5 +1,29 @@
+// --- script.js (versión corregida) ---
+
+// Configuración de Firebase (mantén tus claves existentes)
+const firebaseConfig = {
+  apiKey: "AIzaSyBLJWA3tkQUGqwJad75XQp7VV4t5oiK-dk",
+  authDomain: "spent-original.firebaseapp.com",
+  projectId: "spent-original",
+  storageBucket: "spent-original.firebasestorage.app",
+  messagingSenderId: "495334490672",
+  appId: "1:495334490672:web:023ae00e9c9d702f3263f5",
+  measurementId: "G-EMQLDSZ3ND"
+};
+
+// Inicializar Firebase una sola vez (protección)
+if (!window.__spent_firebase_initialized) {
+  try {
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    window.__spent_firebase_initialized = true;
+  } catch (err) {
+    console.warn('Firebase ya estaba inicializado o falló la inicialización:', err);
+  }
+}
+
 // --- Constantes y Variables Globales ---
-const CORRECT_PIN = "2580"; // Contraseña PIN
 const EXPENSES_STORAGE_KEY = 'spentAppExpenses';
 const CATEGORIES_STORAGE_KEY = 'spentAppCategories';
 
@@ -12,13 +36,20 @@ let deleteActionType = '';
 let deleteTargetId = null;
 let expensesChart = null;
 
+let userId = null;
+let db = null;
+let auth = null;
+
 // --- Referencias DOM ---
 const loginContainer = document.getElementById('login-container');
 const appContainer = document.getElementById('app-container');
-const passwordInput = document.getElementById('password-input');
+const loginEmailInput = document.getElementById('login-email');
+const loginPasswordInput = document.getElementById('login-password');
+const loginButton = document.getElementById('login-button');
+const registerButton = document.getElementById('register-button');
 const loginMessage = document.getElementById('login-message');
+
 const logoutButton = document.getElementById('logout-button');
-const numericKeypad = document.getElementById('numeric-keypad');
 const exportButton = document.getElementById('export-button');
 
 const categoryTabsScrollWrapper = document.getElementById('category-tabs-scroll-wrapper');
@@ -65,34 +96,36 @@ const infoModal = document.getElementById('info-modal');
 const closeInfoButton = document.getElementById('close-info-button');
 const infoTextContent = document.getElementById('info-text-content');
 
-// --- Helpers Firestore / Auth ---
-// Espera a que haya un usuario autenticado (si no, hace signInAnonymously)
-function ensureAuth() {
-    return new Promise((resolve, reject) => {
-        const unsub = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                unsub();
-                resolve(user);
-            } else {
-                try {
-                    const cred = await auth.signInAnonymously();
-                    unsub();
-                    resolve(cred.user);
-                } catch (err) {
-                    console.error('Error signInAnonymously', err);
-                    reject(err);
-                }
-            }
-        });
-    });
+// --- Utilidades ---
+function showMessage(element, message, type = 'info') {
+    if (!element) return;
+    element.textContent = message;
+    element.className = `info ${type}`;
 }
 
+function generateId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+function formatAmount(amount) {
+    const n = parseFloat(amount) || 0;
+    return n.toFixed(2) + '€';
+}
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// --- Firestore helpers ---
 async function getStoredData(key) {
+    if (!userId) return [];
     try {
-        await ensureAuth();
-        const uid = auth.currentUser && auth.currentUser.uid;
-        if (!uid) return [];
-        const doc = await db.collection('users').doc(uid).get();
+        if (!db) db = firebase.firestore();
+        const docRef = db.collection('users').doc(userId);
+        const doc = await docRef.get();
         if (!doc.exists) return [];
         const data = doc.data();
         return data[key] || [];
@@ -103,93 +136,21 @@ async function getStoredData(key) {
 }
 
 async function saveToStorage(key, data) {
+    if (!userId) return;
     try {
-        await ensureAuth();
-        const uid = auth.currentUser && auth.currentUser.uid;
-        if (!uid) return;
-        await db.collection('users').doc(uid).set({ [key]: data }, { merge: true });
+        if (!db) db = firebase.firestore();
+        const docRef = db.collection('users').doc(userId);
+        await docRef.set({ [key]: data }, { merge: true });
     } catch (err) {
         console.error('saveToStorage error', err);
     }
 }
 
-// --- Utilidades ---
-function generateId() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-}
-function formatAmount(amount) {
-    return parseFloat(amount).toFixed(2) + '€';
-}
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
-// --- Autenticación y Login (PIN) ---
-async function checkAuth() {
-    try {
-        await ensureAuth();
-        // No forzamos mostrar la app: sigue visible la pantalla de PIN hasta que el usuario lo escriba.
-        console.log('Auth lista (anonima) =>', auth.currentUser && auth.currentUser.uid);
-    } catch (err) {
-        console.error('checkAuth error', err);
-    }
-}
-
-async function handleLogin() {
-    const enteredPin = passwordInput.value;
-    if (enteredPin === CORRECT_PIN) {
-        loginContainer.classList.add('hidden');
-        appContainer.classList.remove('hidden');
-        loginMessage.textContent = '';
-        await loadAppContent();
-    } else {
-        loginMessage.textContent = 'PIN incorrecto. Inténtalo de nuevo.';
-        passwordInput.value = '';
-    }
-}
-
-function handleLogout() {
-    appContainer.classList.add('hidden');
-    loginContainer.classList.remove('hidden');
-    passwordInput.value = '';
-    loginMessage.textContent = '';
-    activeCategoryName = 'General';
-    if (expensesChart) {
-        expensesChart.destroy();
-        expensesChart = null;
-    }
-}
-
-// --- Teclado numérico ---
-function handleKeypadClick(event) {
-    const button = event.target;
-    if (button.classList.contains('keypad-button')) {
-        const value = button.textContent;
-        if (button.classList.contains('clear-button')) {
-            passwordInput.value = '';
-        } else if (button.classList.contains('delete-button')) {
-            passwordInput.value = passwordInput.value.slice(0, -1);
-        } else {
-            if (passwordInput.value.length < CORRECT_PIN.length) {
-                passwordInput.value += value;
-            }
-            if (passwordInput.value.length === CORRECT_PIN.length) {
-                handleLogin();
-            }
-        }
-    }
-}
-
-// --- Carga inicial: categorías y gastos desde Firestore ---
+// --- Carga inicial ---
 async function loadAppContent() {
-    expenses = await getStoredData(EXPENSES_STORAGE_KEY);
-    categories = await getStoredData(CATEGORIES_STORAGE_KEY);
+    expenses = await getStoredData(EXPENSES_STORAGE_KEY) || [];
+    categories = await getStoredData(CATEGORIES_STORAGE_KEY) || [];
 
-    // Asegurar que haya General
     const generalExists = categories.some(cat => cat.name === "General");
     if (!generalExists) {
         categories = [{ id: 'general-fixed', name: "General" }];
@@ -210,11 +171,11 @@ async function loadAppContent() {
     updatePieChart();
 }
 
-// --- Renderizado de pestañas y vistas ---
+// --- Renderizado ---
 function renderCategoryTabs() {
-    const generalTabElement = document.querySelector('.category-tab[data-category-name="General"]');
+    const existingGeneralTab = document.querySelector('.category-tab[data-category-name="General"]');
     categoryTabsScrollWrapper.innerHTML = '';
-    if (generalTabElement) categoryTabsScrollWrapper.appendChild(generalTabElement);
+    if (existingGeneralTab) categoryTabsScrollWrapper.appendChild(existingGeneralTab);
 
     const otherCategories = categories.filter(cat => cat.name !== "General");
     otherCategories.forEach(category => {
@@ -241,7 +202,8 @@ function activateTab(categoryName) {
 }
 
 function renderGeneralView() {
-    generalTotalAmountSpan.textContent = formatAmount(calculateTotalExpenses());
+    if (generalTotalAmountSpan) generalTotalAmountSpan.textContent = formatAmount(calculateTotalExpenses());
+    if (!categoriesGrid) return;
     categoriesGrid.innerHTML = '';
 
     const categoriesToDisplay = categories.filter(cat => cat.name !== "General");
@@ -262,18 +224,18 @@ function renderGeneralView() {
             `;
             categoriesGrid.appendChild(categoryItem);
 
-            categoryItem.querySelector('.category-name-button')
-                .addEventListener('click', (e) => activateTab(e.target.dataset.categoryName));
+            const nameBtn = categoryItem.querySelector('.category-name-button');
+            if (nameBtn) nameBtn.addEventListener('click', (e) => activateTab(e.target.dataset.categoryName));
 
-            categoryItem.querySelector('.edit-category-button')
-                .addEventListener('click', (e) => openEditCategoryModal(e.target.dataset.categoryId));
+            const editBtn = categoryItem.querySelector('.edit-category-button');
+            if (editBtn) editBtn.addEventListener('click', (e) => openEditCategoryModal(e.target.dataset.categoryId));
 
-            categoryItem.querySelector('.delete-category-button')
-                .addEventListener('click', (e) => {
-                    const categoryId = e.target.dataset.categoryId;
-                    const category = categories.find(cat => cat.id === categoryId);
-                    if (category) openConfirmDeleteModal('category', category.id, `¿Estás seguro de que quieres eliminar la categoría "${category.name}" y todos sus gastos?`);
-                });
+            const delBtn = categoryItem.querySelector('.delete-category-button');
+            if (delBtn) delBtn.addEventListener('click', (e) => {
+                const categoryId = e.target.dataset.categoryId;
+                const category = categories.find(cat => cat.id === categoryId);
+                if (category) openConfirmDeleteModal('category', category.id, `¿Estás seguro de que quieres eliminar la categoría "${category.name}" y todos sus gastos?`);
+            });
         });
     }
     updatePieChart();
@@ -283,17 +245,20 @@ function renderAllCategoryViews() {
     document.querySelectorAll('.category-main-view:not(#view-General)').forEach(v => v.remove());
     categories.forEach(category => {
         if (category.name === "General") return;
+        if (!templateCategoryView) return;
         const categoryView = templateCategoryView.cloneNode(true);
         categoryView.id = `view-${category.name.replace(/\s+/g, '-')}`;
         categoryView.dataset.category = category.name;
         categoryView.classList.remove('hidden');
         categoryView.classList.remove('active');
         categoryView.removeAttribute('data-category-template');
-        categoryView.querySelector('.category-specific-title').textContent = category.name.toUpperCase();
+        const titleEl = categoryView.querySelector('.category-specific-title');
+        if (titleEl) titleEl.textContent = category.name.toUpperCase();
         mainContent.appendChild(categoryView);
         renderExpensesForSpecificCategoryView(category.name);
 
-        categoryView.querySelector('.add-expense-category-button').addEventListener('click', () => openExpenseModal(category.name));
+        const addBtn = categoryView.querySelector('.add-expense-category-button');
+        if (addBtn) addBtn.addEventListener('click', () => openExpenseModal(category.name));
     });
 }
 
@@ -302,16 +267,17 @@ function renderExpensesForSpecificCategoryView(categoryName) {
     if (!categoryView) return;
     const expenseList = categoryView.querySelector('.expense-list');
     const noExpensesMessage = categoryView.querySelector('.no-expenses');
-    expenseList.innerHTML = '';
+    if (expenseList) expenseList.innerHTML = '';
 
     const expensesForCategory = expenses.filter(exp => exp.category === categoryName);
     const totalForCategory = calculateTotalExpensesByCategory(categoryName);
-    categoryView.querySelector('.category-specific-total').textContent = formatAmount(totalForCategory);
+    const totalSpan = categoryView.querySelector('.category-specific-total');
+    if (totalSpan) totalSpan.textContent = formatAmount(totalForCategory);
 
     if (expensesForCategory.length === 0) {
-        noExpensesMessage.classList.remove('hidden');
+        if (noExpensesMessage) noExpensesMessage.classList.remove('hidden');
     } else {
-        noExpensesMessage.classList.add('hidden');
+        if (noExpensesMessage) noExpensesMessage.classList.add('hidden');
         expensesForCategory.sort((a,b) => new Date(b.date) - new Date(a.date));
         expensesForCategory.forEach(expense => {
             const li = document.createElement('li');
@@ -327,7 +293,7 @@ function renderExpensesForSpecificCategoryView(categoryName) {
                     <button class="delete-button" data-id="${expense.id}" data-category="${expense.category}">Delete</button>
                 </div>
             `;
-            expenseList.appendChild(li);
+            if (expenseList) expenseList.appendChild(li);
         });
     }
 
@@ -345,99 +311,100 @@ function renderExpensesForSpecificCategoryView(categoryName) {
 
 // --- Cálculos ---
 function calculateTotalExpenses() {
-    return expenses.reduce((total, exp) => total + parseFloat(exp.amount), 0);
+    return expenses.reduce((total, exp) => total + parseFloat(exp.amount || 0), 0);
 }
+
 function calculateTotalExpensesByCategory(categoryName) {
-    return expenses.filter(exp => exp.category === categoryName).reduce((t, e) => t + parseFloat(e.amount), 0);
+    return expenses.filter(exp => exp.category === categoryName).reduce((t, e) => t + parseFloat(e.amount || 0), 0);
 }
 
 // --- Gráfico de tarta ---
 function updatePieChart() {
-    if (expensesChart) { expensesChart.destroy(); expensesChart = null; }
-    const categoryTotals = {};
-    expenses.forEach(exp => {
-        if (exp.category !== 'General') {
-            categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + parseFloat(exp.amount);
+    try {
+        if (expensesChart) {
+            expensesChart.destroy();
+            expensesChart = null;
         }
-    });
-    const labels = Object.keys(categoryTotals);
-    const data = Object.values(categoryTotals);
-
-    if (labels.length === 0 || data.every(d => d === 0)) {
-        expensesPieChartCanvas.classList.add('hidden');
-        noChartDataMessage.classList.remove('hidden');
-        return;
-    } else {
-        expensesPieChartCanvas.classList.remove('hidden');
-        noChartDataMessage.classList.add('hidden');
-    }
-
-    const backgroundColors = [
-        '#0a7aff','#ff9501','#34c759','#5856d6','#af52de','#ff3b2f','#ffcc00','#a2845e','#646468','#007aff'
-    ];
-    const colors = labels.map((_, i) => backgroundColors[i % backgroundColors.length]);
-    const ctx = expensesPieChartCanvas.getContext('2d');
-    expensesChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels,
-            datasets: [{ data, backgroundColor: colors, borderColor: '#ffffff', borderWidth: 2 }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right', labels: { font: { size: 14 } } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label ? context.label + ': ' : '';
-                            if (context.parsed !== null) label += formatAmount(context.parsed);
-                            return label;
-                        }
-                    }
+        const categoryTotals = {};
+        expenses.forEach(exp => {
+            if (exp.category !== 'General') {
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + parseFloat(exp.amount || 0);
+            }
+        });
+        const labels = Object.keys(categoryTotals);
+        const data = Object.values(categoryTotals);
+        if (!expensesPieChartCanvas) return;
+        if (labels.length === 0 || data.every(d => d === 0)) {
+            expensesPieChartCanvas.classList.add('hidden');
+            if (noChartDataMessage) noChartDataMessage.classList.remove('hidden');
+            return;
+        } else {
+            expensesPieChartCanvas.classList.remove('hidden');
+            if (noChartDataMessage) noChartDataMessage.classList.add('hidden');
+        }
+        const backgroundColors = [
+            '#0a7aff', '#ff9501', '#34c759', '#5856d6', '#af52de', '#ff3b2f', '#ffcc00', '#a2845e', '#646468', '#007aff'
+        ];
+        const colors = labels.map((_, i) => backgroundColors[i % backgroundColors.length]);
+        const ctx = expensesPieChartCanvas.getContext('2d');
+        expensesChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: colors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { font: { size: 14 } } },
+                    tooltip: { callbacks: { label: function(context) { let label = context.label ? context.label + ': ' : ''; if (context.parsed !== null) label += formatAmount(context.parsed); return label; } } }
                 }
             }
-        }
-    });
+        });
+    } catch (err) {
+        console.error('updatePieChart error', err);
+    }
 }
 
 // --- Modales de Categoría ---
 function openAddCategoryModal() {
+    if (!addCategoryModal) return;
     addCategoryModal.classList.remove('hidden');
-    newCategoryInput.value = '';
-    categoryModalMessage.textContent = '';
-    newCategoryInput.focus();
+    if (newCategoryInput) newCategoryInput.value = '';
+    if (categoryModalMessage) categoryModalMessage.textContent = '';
+    if (newCategoryInput) newCategoryInput.focus();
 }
+
 function closeAddCategoryModal() {
+    if (!addCategoryModal) return;
     addCategoryModal.classList.add('hidden');
 }
 
 async function addNewCategory() {
+    if (!newCategoryInput) return;
     const categoryName = newCategoryInput.value.trim();
     if (!categoryName) {
-        categoryModalMessage.textContent = 'El nombre de la categoría no puede estar vacío.';
-        categoryModalMessage.classList.add('error');
+        showMessage(categoryModalMessage, 'El nombre de la categoría no puede estar vacío.', 'error');
         return;
     }
     if (categories.some(cat => cat.name.toLowerCase() === categoryName.toLowerCase())) {
-        categoryModalMessage.textContent = 'Esa categoría ya existe.';
-        categoryModalMessage.classList.add('error');
+        showMessage(categoryModalMessage, 'Esa categoría ya existe.', 'error');
         return;
     }
     const newCategory = { id: generateId(), name: categoryName };
     categories.push(newCategory);
     await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
-
     renderCategoryTabs();
     renderGeneralView();
     renderAllCategoryViews();
     updatePieChart();
-
-    categoryModalMessage.textContent = `Categoría "${categoryName}" añadida.`;
-    categoryModalMessage.classList.remove('error');
-    categoryModalMessage.classList.add('info');
-
+    showMessage(categoryModalMessage, `Categoría "${categoryName}" añadida.`, 'success');
     setTimeout(() => closeAddCategoryModal(), 800);
 }
 
@@ -445,284 +412,296 @@ function openEditCategoryModal(categoryId) {
     categoryToEdit = categories.find(cat => cat.id === categoryId);
     if (!categoryToEdit) return;
     if (categoryToEdit.name === "General") {
-        editCategoryMessage.textContent = "La categoría 'General' no puede ser editada.";
-        editCategoryMessage.classList.add('error');
-        setTimeout(() => { editCategoryModal.classList.add('hidden'); editCategoryMessage.textContent=''; }, 1500);
-        return;
+        if (editCategoryMessage) editCategoryMessage.textContent = "La categoría 'General' no puede ser editada ni eliminada.";
+        if (confirmEditCategoryButton) confirmEditCategoryButton.style.display = 'none';
+    } else {
+        if (editCategoryMessage) editCategoryMessage.textContent = '';
+        if (confirmEditCategoryButton) confirmEditCategoryButton.style.display = 'inline-block';
     }
-    editCategoryInput.value = categoryToEdit.name;
-    editCategoryModal.classList.remove('hidden');
-    editCategoryMessage.textContent = '';
-    editCategoryInput.focus();
+    if (editCategoryInput) editCategoryInput.value = categoryToEdit.name;
+    if (editCategoryModal) editCategoryModal.classList.remove('hidden');
+    if (editCategoryInput) editCategoryInput.focus();
 }
+
 function closeEditCategoryModal() {
+    if (!editCategoryModal) return;
     editCategoryModal.classList.add('hidden');
-    categoryToEdit = null;
 }
 
 async function confirmEditCategory() {
     if (!categoryToEdit) return;
-    const newCategoryName = editCategoryInput.value.trim();
-    if (!newCategoryName) {
-        editCategoryMessage.textContent = 'El nombre de la categoría no puede estar vacío.';
-        editCategoryMessage.classList.add('error');
+    if (!editCategoryInput) return;
+    const newName = editCategoryInput.value.trim();
+    if (!newName) {
+        showMessage(editCategoryMessage, 'El nombre no puede estar vacío.', 'error');
         return;
     }
-    if (categories.some(cat => cat.name.toLowerCase() === newCategoryName.toLowerCase() && cat.id !== categoryToEdit.id)) {
-        editCategoryMessage.textContent = 'Esa categoría ya existe.';
-        editCategoryMessage.classList.add('error');
+    if (categories.some(cat => cat.name.toLowerCase() === newName.toLowerCase() && cat.id !== categoryToEdit.id)) {
+        showMessage(editCategoryMessage, 'Esa categoría ya existe.', 'error');
         return;
     }
-    if (categoryToEdit.name === "General") {
-        editCategoryMessage.textContent = "No se puede renombrar la categoría 'General'.";
-        editCategoryMessage.classList.add('error');
-        return;
-    }
-
-    const oldCategoryName = categoryToEdit.name;
-    categoryToEdit.name = newCategoryName;
-    // Actualizar gastos
-    expenses.forEach(exp => { if (exp.category === oldCategoryName) exp.category = newCategoryName; });
-
+    const oldName = categoryToEdit.name;
+    categoryToEdit.name = newName;
+    expenses.forEach(exp => { if (exp.category === oldName) exp.category = newName; });
     await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
     await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-
-    editCategoryMessage.textContent = `Categoría renombrada a "${newCategoryName}".`;
-    editCategoryMessage.classList.remove('error');
-    editCategoryMessage.classList.add('info');
-
     renderCategoryTabs();
-    renderGeneralView();
     renderAllCategoryViews();
-    activateTab(newCategoryName);
+    renderGeneralView();
     updatePieChart();
-
-    setTimeout(() => closeEditCategoryModal(), 900);
+    closeEditCategoryModal();
 }
 
 // --- Modales de Gasto ---
 function openExpenseModal(categoryName, expenseId = null) {
-    expenseModal.classList.remove('hidden');
-    expenseModalMessage.textContent = '';
-    modalExpenseCategorySelect.innerHTML = '';
-    categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat.name;
-        option.textContent = cat.name;
-        modalExpenseCategorySelect.appendChild(option);
-    });
+    editingExpenseId = expenseId;
+    if (expenseModalTitle) expenseModalTitle.textContent = expenseId ? 'Editar Gasto' : 'Nuevo Gasto';
+    if (modalExpenseAmountInput) modalExpenseAmountInput.value = '';
+    if (modalExpenseDescriptionInput) modalExpenseDescriptionInput.value = '';
+    if (modalExpenseDateInput) modalExpenseDateInput.value = new Date().toISOString().slice(0, 10);
+    if (expenseModalMessage) expenseModalMessage.textContent = '';
+
+    if (modalExpenseCategorySelect) {
+        modalExpenseCategorySelect.innerHTML = '';
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.name;
+            option.textContent = category.name;
+            modalExpenseCategorySelect.appendChild(option);
+        });
+    }
 
     if (expenseId) {
-        editingExpenseId = expenseId;
-        expenseModalTitle.textContent = 'Editar Gasto';
-        confirmExpenseButton.textContent = 'Guardar Cambios';
-        const expense = expenses.find(e => e.id === expenseId);
-        if (expense) {
-            modalExpenseAmountInput.value = expense.amount;
-            modalExpenseDescriptionInput.value = expense.description;
-            modalExpenseDateInput.value = expense.date;
-            modalExpenseCategorySelect.value = expense.category;
+        const expenseToEdit = expenses.find(exp => exp.id === expenseId);
+        if (expenseToEdit) {
+            if (modalExpenseAmountInput) modalExpenseAmountInput.value = expenseToEdit.amount;
+            if (modalExpenseDescriptionInput) modalExpenseDescriptionInput.value = expenseToEdit.description;
+            if (modalExpenseDateInput) modalExpenseDateInput.value = expenseToEdit.date;
+            if (modalExpenseCategorySelect) modalExpenseCategorySelect.value = expenseToEdit.category;
         }
-    } else {
-        editingExpenseId = null;
-        expenseModalTitle.textContent = 'Añadir Nuevo Gasto';
-        confirmExpenseButton.textContent = 'Añadir Gasto';
-        modalExpenseAmountInput.value = '';
-        modalExpenseDescriptionInput.value = '';
-        modalExpenseDateInput.value = new Date().toISOString().split('T')[0];
-        modalExpenseCategorySelect.value = categoryName || categories[0]?.name || '';
+    } else if (categoryName && modalExpenseCategorySelect) {
+        modalExpenseCategorySelect.value = categoryName;
     }
-    modalExpenseAmountInput.focus();
+
+    if (expenseModal) expenseModal.classList.remove('hidden');
 }
 
 function closeExpenseModal() {
+    if (!expenseModal) return;
     expenseModal.classList.add('hidden');
-    editingExpenseId = null;
-    expenseModalMessage.textContent = '';
 }
 
 async function handleConfirmExpense() {
+    if (!modalExpenseAmountInput || !modalExpenseDescriptionInput || !modalExpenseDateInput || !modalExpenseCategorySelect) {
+        showMessage(expenseModalMessage, 'Faltan campos del modal de gasto en el DOM.', 'error');
+        return;
+    }
     const amount = parseFloat(modalExpenseAmountInput.value);
     const description = modalExpenseDescriptionInput.value.trim();
     const date = modalExpenseDateInput.value;
     const category = modalExpenseCategorySelect.value;
 
-    if (isNaN(amount) || amount <= 0) {
-        expenseModalMessage.textContent = 'Por favor, introduce una cantidad válida.';
-        expenseModalMessage.classList.add('error');
-        return;
-    }
-    if (!description) {
-        expenseModalMessage.textContent = 'Por favor, introduce una descripción.';
-        expenseModalMessage.classList.add('error');
-        return;
-    }
-    if (!date) {
-        expenseModalMessage.textContent = 'Por favor, selecciona una fecha.';
-        expenseModalMessage.classList.add('error');
-        return;
-    }
-    if (!category) {
-        expenseModalMessage.textContent = 'Por favor, selecciona una categoría.';
-        expenseModalMessage.classList.add('error');
+    if (isNaN(amount) || amount <= 0 || !description || !date) {
+        showMessage(expenseModalMessage, 'Por favor, rellena todos los campos correctamente.', 'error');
         return;
     }
 
     if (editingExpenseId) {
-        const idx = expenses.findIndex(e => e.id === editingExpenseId);
-        if (idx !== -1) {
-            expenses[idx] = { id: editingExpenseId, amount, description, date, category };
-            expenseModalMessage.textContent = 'Gasto actualizado con éxito.';
+        const expenseToUpdate = expenses.find(exp => exp.id === editingExpenseId);
+        if (expenseToUpdate) {
+            expenseToUpdate.amount = amount;
+            expenseToUpdate.description = description;
+            expenseToUpdate.date = date;
+            expenseToUpdate.category = category;
         }
     } else {
         const newExpense = { id: generateId(), amount, description, date, category };
         expenses.push(newExpense);
-        expenseModalMessage.textContent = 'Gasto añadido con éxito.';
     }
 
     await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-
     renderGeneralView();
-    renderExpensesForSpecificCategoryView(activeCategoryName);
+    renderAllCategoryViews();
     updatePieChart();
-
-    setTimeout(() => closeExpenseModal(), 800);
+    closeExpenseModal();
 }
 
-// --- Confirm delete ---
-function openConfirmDeleteModal(type, id, message) {
+// --- Confirmar borrado ---
+function openConfirmDeleteModal(type, targetId, message) {
     deleteActionType = type;
-    deleteTargetId = id;
-    confirmDeleteMessage.textContent = message;
-    confirmDeleteModal.classList.remove('hidden');
+    deleteTargetId = targetId;
+    if (confirmDeleteMessage) confirmDeleteMessage.textContent = message;
+    if (confirmDeleteModal) confirmDeleteModal.classList.remove('hidden');
 }
+
 function closeConfirmDeleteModal() {
-    confirmDeleteModal.classList.add('hidden');
+    if (confirmDeleteModal) confirmDeleteModal.classList.add('hidden');
     deleteActionType = '';
     deleteTargetId = null;
-    confirmDeleteMessage.textContent = '';
 }
 
 async function handleDeleteConfirm() {
-    if (deleteActionType === 'category') {
-        const cat = categories.find(c => c.id === deleteTargetId);
-        if (!cat) return;
-        if (cat.name === "General") {
-            confirmDeleteMessage.textContent = "No se puede eliminar la categoría 'General'.";
-            confirmDeleteMessage.classList.add('error');
-            setTimeout(() => closeConfirmDeleteModal(), 1200);
-            return;
+    if (deleteActionType === 'expense') {
+        expenses = expenses.filter(exp => exp.id !== deleteTargetId);
+        await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
+        renderGeneralView();
+        renderAllCategoryViews();
+        updatePieChart();
+    } else if (deleteActionType === 'category') {
+        const categoryToDelete = categories.find(cat => cat.id === deleteTargetId);
+        if (categoryToDelete) {
+            expenses = expenses.filter(exp => exp.category !== categoryToDelete.name);
+            categories = categories.filter(cat => cat.id !== deleteTargetId);
+            await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
+            await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
+            renderGeneralView();
+            renderAllCategoryViews();
+            updatePieChart();
+            activateTab('General');
         }
-        await deleteCategory(deleteTargetId);
-    } else if (deleteActionType === 'expense') {
-        await deleteExpense(deleteTargetId);
     }
     closeConfirmDeleteModal();
 }
 
-async function deleteCategory(categoryId) {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-    expenses = expenses.filter(e => e.category !== category.name);
-    categories = categories.filter(c => c.id !== categoryId);
-    await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-    await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
-
-    renderCategoryTabs();
-    renderGeneralView();
-    renderAllCategoryViews();
-    activateTab('General');
-    updatePieChart();
-}
-
-async function deleteExpense(expenseId) {
-    expenses = expenses.filter(e => e.id !== expenseId);
-    await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-    renderGeneralView();
-    renderExpensesForSpecificCategoryView(activeCategoryName);
-    updatePieChart();
-}
-
-// --- Export a texto ---
+// --- Exportar ---
 function exportDataToTextFile() {
-    let textContent = "Reporte de Gastos Spent\n\n";
-    const sortedCategories = [...categories].sort((a,b) => {
-        if (a.name === "General") return -1;
-        if (b.name === "General") return 1;
-        return a.name.localeCompare(b.name);
-    });
-    sortedCategories.forEach(category => {
-        textContent += `Categoría: ${category.name.toUpperCase()}\n`;
-        textContent += `Total en ${category.name}: ${formatAmount(calculateTotalExpensesByCategory(category.name))}\n`;
-        textContent += "--------------------------------------\n";
-        const expensesForCategory = expenses.filter(e => e.category === category.name);
-        if (expensesForCategory.length === 0) {
-            textContent += "  No hay gastos en esta categoría.\n";
-        } else {
-            expensesForCategory.sort((a,b) => new Date(b.date) - new Date(a.date));
-            expensesForCategory.forEach(exp => {
-                textContent += `  Fecha: ${formatDate(exp.date)}\n`;
-                textContent += `  Cantidad: ${formatAmount(exp.amount)}\n`;
-                textContent += `  Descripción: ${exp.description}\n`;
-                textContent += "  ---\n";
-            });
-        }
-        textContent += "\n";
-    });
-
-    const encodedUri = encodeURIComponent(textContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", `data:text/plain;charset=utf-8,${encodedUri}`);
-    link.setAttribute("download", "Mi reporte de gastos.txt");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = JSON.stringify({ expenses, categories }, null, 2);
+    const blob = new Blob([data], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'spentApp_data.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
-// --- Botón invitar WhatsApp ---
+// --- Invitar / Info ---
 function invitarViaWhatsApp() {
-    const message = `¡Hola!, soy Diego.\n\n¡Te invito a usar esta web-app que he creado para contabilizar tus gastos!\n\n🔒Los gastos se almacenan localmente en tu dispositivo, por lo que es totalmente segura. 🔒\n\nhttps://mentis1.github.io/Spent/\n\n🤫El código de acceso es 2580🤫`;
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    const message = "¡Hola! Te invito a usar la app de gastos SpentApp. Es súper útil para llevar un registro de tus finanzas. Puedes descargar el código aquí: [enlace_a_tu_repositorio_o_pagina]";
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
 }
 
-// --- Info modal handlers ---
-function openInfoModal() { infoModal.classList.remove('hidden'); }
-function closeInfoModal() { infoModal.classList.add('hidden'); }
+function openInfoModal() {
+    const infoText = `
+        <p><strong>SpentApp v1.0</strong></p>
+        <p>Aplicación de gestión de gastos personales.</p>
+        <p>Desarrollada para un registro fácil y rápido de gastos por categoría.</p>
+        <p><strong>Características:</strong></p>
+        <ul>
+            <li>Registro de gastos por cantidad, descripción, fecha y categoría.</li>
+            <li>Creación y gestión de categorías personalizadas.</li>
+            <li>Vista general de todos los gastos y totales por categoría.</li>
+            <li>Gráfico de tarta para visualizar la distribución de los gastos.</li>
+            <li>Exportación de datos a un archivo de texto.</li>
+        </ul>
+        <p>Agradecimientos a todos los que contribuyeron al desarrollo de esta aplicación.</p>
+    `;
+    if (infoTextContent) infoTextContent.innerHTML = infoText;
+    if (infoModal) infoModal.classList.remove('hidden');
+}
 
-// --- Event Listeners ---
+function closeInfoModal() {
+    if (infoModal) infoModal.classList.add('hidden');
+}
+
+// --- Listeners & Inicialización ---
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuth().catch(e => console.error('Auth init error', e));
+    // Listeners de login/registro
+    if (loginButton) loginButton.addEventListener('click', handleLogin);
+    if (registerButton) registerButton.addEventListener('click', handleRegister);
+
+    // Otros listeners
+    if (logoutButton) logoutButton.addEventListener('click', handleLogout);
+    if (exportButton) exportButton.addEventListener('click', exportDataToTextFile);
+
+    if (addNewCategoryButton) addNewCategoryButton.addEventListener('click', openAddCategoryModal);
+    if (confirmAddCategoryButton) confirmAddCategoryButton.addEventListener('click', addNewCategory);
+    if (cancelAddCategoryButton) cancelAddCategoryButton.addEventListener('click', closeAddCategoryModal);
+
+    if (confirmExpenseButton) confirmExpenseButton.addEventListener('click', handleConfirmExpense);
+    if (cancelExpenseButton) cancelExpenseButton.addEventListener('click', closeExpenseModal);
+
+    if (confirmEditCategoryButton) confirmEditCategoryButton.addEventListener('click', confirmEditCategory);
+    if (cancelEditCategoryButton) cancelEditCategoryButton.addEventListener('click', closeEditCategoryModal);
+
+    if (confirmDeleteButton) confirmDeleteButton.addEventListener('click', handleDeleteConfirm);
+    if (cancelDeleteButton) cancelDeleteButton.addEventListener('click', closeConfirmDeleteModal);
+
+    const generalTab = document.querySelector('.category-tab[data-category-name="General"]');
+    if (generalTab) generalTab.addEventListener('click', () => activateTab('General'));
+
+    if (nuevoBotonInvitar) nuevoBotonInvitar.addEventListener('click', invitarViaWhatsApp);
+    if (infoButton) infoButton.addEventListener('click', openInfoModal);
+    if (closeInfoButton) closeInfoButton.addEventListener('click', closeInfoModal);
+
+    [addCategoryModal, expenseModal, editCategoryModal, confirmDeleteModal, infoModal].forEach(modal => {
+        if (!modal) return;
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+    });
 });
 
-numericKeypad.addEventListener('click', handleKeypadClick);
-logoutButton.addEventListener('click', handleLogout);
-exportButton.addEventListener('click', exportDataToTextFile);
+// --- Auth: login/register/logout (compat API) ---
+async function handleLogin() {
+    const email = loginEmailInput.value;
+    const password = loginPasswordInput.value;
+    try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        showMessage(loginMessage, "Inicio de sesión exitoso.", 'success');
+    } catch (error) {
+        let message = "Error al iniciar sesión.";
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            message = "Correo electrónico o contraseña incorrectos.";
+        } else if (error.code === 'auth/too-many-requests') {
+            message = "Demasiados intentos de inicio de sesión fallidos. Inténtalo de nuevo más tarde.";
+        }
+        showMessage(loginMessage, message, 'error');
+    }
+}
 
-addNewCategoryButton.addEventListener('click', openAddCategoryModal);
-confirmAddCategoryButton.addEventListener('click', addNewCategory);
-cancelAddCategoryButton.addEventListener('click', closeAddCategoryModal);
+async function handleRegister() {
+    const email = loginEmailInput.value;
+    const password = loginPasswordInput.value;
+    try {
+        await firebase.auth().createUserWithEmailAndPassword(email, password);
+        showMessage(loginMessage, "Registro exitoso. Iniciando sesión...", 'success');
+    } catch (error) {
+        let message = "Error al registrarse.";
+        if (error.code === 'auth/email-already-in-use') {
+            message = "Ese correo ya está en uso.";
+        } else if (error.code === 'auth/weak-password') {
+            message = "La contraseña debe tener al menos 6 caracteres.";
+        }
+        showMessage(loginMessage, message, 'error');
+    }
+}
 
-confirmExpenseButton.addEventListener('click', handleConfirmExpense);
-cancelExpenseButton.addEventListener('click', closeExpenseModal);
-
-confirmEditCategoryButton.addEventListener('click', confirmEditCategory);
-cancelEditCategoryButton.addEventListener('click', closeEditCategoryModal);
-
-confirmDeleteButton.addEventListener('click', handleDeleteConfirm);
-cancelDeleteButton.addEventListener('click', closeConfirmDeleteModal);
-
-document.querySelector('.category-tab[data-category-name="General"]').addEventListener('click', () => activateTab('General'));
-
-if (nuevoBotonInvitar) nuevoBotonInvitar.addEventListener('click', invitarViaWhatsApp);
-if (infoButton) infoButton.addEventListener('click', openInfoModal);
-if (closeInfoButton) closeInfoButton.addEventListener('click', closeInfoModal);
-
-// Cerrar modales al hacer click fuera
-[addCategoryModal, expenseModal, editCategoryModal, confirmDeleteModal, infoModal].forEach(modal => {
-    if (!modal) return;
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.add('hidden');
+function handleLogout() {
+    firebase.auth().signOut().then(() => {
+        showMessage(loginMessage, "Sesión cerrada correctamente.", 'success');
+        if (loginEmailInput) loginEmailInput.value = '';
+        if (loginPasswordInput) loginPasswordInput.value = '';
+    }).catch((error) => {
+        console.error("Error al cerrar sesión: ", error);
     });
+}
+
+// Escuchar cambios de autenticación
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        userId = user.uid;
+        db = firebase.firestore();
+        auth = firebase.auth();
+        if (loginContainer) loginContainer.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'block';
+        loadAppContent();
+    } else {
+        userId = null;
+        db = null;
+        auth = null;
+        if (appContainer) appContainer.style.display = 'none';
+        if (loginContainer) loginContainer.style.display = 'flex';
+    }
 });

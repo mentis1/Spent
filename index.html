@@ -1,200 +1,165 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Spent</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="iconospentios.png">
-    <link rel="apple-touch-icon" href="iconospentios.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spent</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="iconospentios.png">
+  <link rel="apple-touch-icon" href="iconospentios.png">
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Librerías externas (compat para mantener tu código original) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase (compat versión, expone global `firebase`) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-    <script>
-      // Tu configuración (la misma que nos diste)
-      const firebaseConfig = {
-        apiKey: "AIzaSyBLJWA3tkQUGqwJad75XQp7VV4t5oiK-dk",
-        authDomain: "spent-original.firebaseapp.com",
-        projectId: "spent-original",
-        storageBucket: "spent-original.firebasestorage.app",
-        messagingSenderId: "495334490672",
-        appId: "1:495334490672:web:023ae00e9c9d702f3263f5",
-        measurementId: "G-EMQLDSZ3ND"
-      };
-
-      // Inicializa Firebase
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-    </script>
+  <!-- Inicialización de Firebase en el script.js (protección incluida) -->
+  <script defer src="script.js"></script>
 </head>
 <body>
 
-    <!-- --- TU HTML ORIGINAL (sin cambios funcionales) --- -->
-    <div id="login-container" class="apple-card">
-        <h2 class="login-title"><img src="spendsalternativo.png" alt="Spent Logo" class="title-logo"> Spent</h2>
-        <input type="password" id="password-input" placeholder="Introduce PIN" maxlength="4" readonly>
-        <p id="login-message" class="error"></p>
-        <div id="numeric-keypad">
-            <button class="keypad-button">1</button>
-            <button class="keypad-button">2</button>
-            <button class="keypad-button">3</button>
-            <button class="keypad-button">4</button>
-            <button class="keypad-button">5</button>
-            <button class="keypad-button">6</button>
-            <button class="keypad-button">7</button>
-            <button class="keypad-button">8</button>
-            <button class="keypad-button">9</button>
-            <button class="keypad-button clear-button">C</button>
-            <button class="keypad-button">0</button>
-            <button class="keypad-button delete-button">⌫</button>
+  <!-- 🔹 Formulario de Login -->
+  <div id="login-container" class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <input type="email" id="login-email" placeholder="Correo electrónico" class="apple-input">
+    <input type="password" id="login-password" placeholder="Contraseña" class="apple-input">
+    <div class="login-actions">
+      <button id="login-button" class="apple-button">Iniciar Sesión</button>
+      <button id="register-button" class="apple-button-secondary">Registrarse</button>
+    </div>
+    <p id="login-message" class="info"></p>
+  </div>
+
+  <!-- 🔹 App (oculta hasta login) -->
+  <div id="app-container" style="display:none;">
+    <header class="app-header">
+      <div class="app-title-group">
+        <img src="spendsalternativo.png" alt="Spent Logo" class="title-logo">
+        <h1>Spent</h1>
+      </div>
+      <div class="header-actions">
+        <button id="export-button" class="export-button">
+          <img src="exportar.png" alt="Exportar">
+        </button>
+        <button id="logout-button" class="logout-button">Log Out</button>
+      </div>
+    </header>
+
+    <nav class="category-tabs-nav">
+      <div id="category-tabs-scroll-wrapper" class="category-tabs-scroll-wrapper">
+        <button class="category-tab active" data-category-name="General" data-category-id="general-fixed">General</button>
+      </div>
+    </nav>
+
+    <main id="main-content" class="main-content">
+      <div id="view-General" class="category-main-view active" data-category="General">
+        <div class="summary-card">
+          <span class="card-title">GENERAL</span>
+          <span class="card-total-amount" id="general-total-amount">0.00€</span>
         </div>
-    </div>
-
-    <div id="app-container" class="hidden">
-        <header class="app-header">
-            <div class="app-title-group">
-                <img src="spendsalternativo.png" alt="Spent Logo" class="title-logo">
-                <h1>Spent</h1>
-            </div>
-            <div class="header-actions">
-                <button id="export-button" class="export-button">
-                    <img src="exportar.png" alt="Exportar">
-                </button>
-                <button id="logout-button" class="logout-button">Log Out</button>
-            </div>
-        </header>
-
-        <nav class="category-tabs-nav">
-            <div id="category-tabs-scroll-wrapper" class="category-tabs-scroll-wrapper">
-                <button class="category-tab active" data-category-name="General" data-category-id="general-fixed">General</button>
-            </div>
-        </nav>
-
-        <main id="main-content" class="main-content">
-            <div id="view-General" class="category-main-view active" data-category="General">
-                <div class="summary-card">
-                    <span class="card-title">GENERAL</span>
-                    <span class="card-total-amount" id="general-total-amount">0.00€</span>
-                </div>
-                <div class="categories-list-card">
-                    <span class="card-title">Categorías</span>
-                    <div id="categories-grid">
-                        </div>
-                    <button id="add-new-category-button" class="apple-button full-width-button">Añadir nueva categoría</button>
-                </div>
-                <div class="chart-card">
-                    <span class="card-title">Gastos por Categoría</span>
-                    <div class="chart-container">
-                        <canvas id="expensesPieChart"></canvas>
-                    </div>
-                    <p id="no-chart-data-message" class="info hidden">No hay gastos en categorías para mostrar en el gráfico.</p>
-                </div>
-                <button id="Invitar" class="apple-button-secondary">
-                Recomendar a <br> un amigo <img src="was.png" class="button-icon">
-                </button>
-                <button id="Info" class="apple-button-secondary">
-                 Info <img src="info.png" alt="Información" class="button-icon">
-                </button>          
-            </div>
-
-            <div id="template-category-view" class="category-main-view hidden" data-category-template>
-                <div class="summary-card">
-                    <span class="card-title category-specific-title"></span>
-                    <span class="card-total-amount category-specific-total">0.00€</span>
-                </div>
-                <div class="add-expense-section">
-                    <button class="apple-button full-width-button add-expense-category-button">Añadir Nuevo Gasto</button>
-                </div>
-                <ul class="expense-list">
-                    </ul>
-                <p class="no-expenses hidden">No hay gastos en esta categoría aún.</p>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modales (mantengo tu HTML tal cual) -->
-    <div id="expense-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2 id="expense-modal-title">Añadir Nuevo Gasto</h2>
-            <input type="number" id="modal-expense-amount" placeholder="Cantidad (€)" class="apple-input" required>
-            <input type="text" id="modal-expense-description" placeholder="Descripción" class="apple-input" required>
-            <input type="date" id="modal-expense-date" class="apple-input" required>
-            <select id="modal-expense-category-select" class="apple-input">
-                <option value="">Selecciona Categoría</option>
-            </select>
-            <div class="modal-actions">
-                <button id="confirm-expense-button" class="apple-button">Añadir Gasto</button>
-                <button id="cancel-expense-button" class="apple-button-secondary">Cancelar</button>
-            </div>
-            <p id="expense-modal-message" class="info"></p>
+        <div class="categories-list-card">
+          <span class="card-title">Categorías</span>
+          <div id="categories-grid"></div>
+          <button id="add-new-category-button" class="apple-button full-width-button">Añadir nueva categoría</button>
         </div>
-    </div>
-
-    <div id="add-category-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2>Añadir Nueva Categoría</h2>
-            <input type="text" id="new-category-input" placeholder="Nombre de la categoría" class="apple-input">
-            <div class="modal-actions">
-                <button id="confirm-add-category" class="apple-button">Añadir</button>
-                <button id="cancel-add-category" class="apple-button-secondary">Cancelar</button>
-            </div>
-            <p id="category-modal-message" class="info"></p>
+        <div class="chart-card">
+          <span class="card-title">Gastos por Categoría</span>
+          <div class="chart-container">
+            <canvas id="expensesPieChart"></canvas>
+          </div>
+          <p id="no-chart-data-message" class="info hidden">No hay gastos en categorías para mostrar en el gráfico.</p>
         </div>
-    </div>
+        <button id="Invitar" class="apple-button-secondary">
+          Recomendar a <br> un amigo <img src="was.png" class="button-icon">
+        </button>
+        <button id="Info" class="apple-button-secondary">
+          Info <img src="info.png" alt="Información" class="button-icon">
+        </button>
+      </div>
 
-    <div id="edit-category-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2>Editar Categoría</h2>
-            <input type="text" id="edit-category-input" class="apple-input">
-            <div class="modal-actions">
-                <button id="confirm-edit-category-button" class="apple-button">Guardar Cambios</button>
-                <button id="cancel-edit-category-button" class="apple-button-secondary">Cancelar</button>
-            </div>
-            <p id="edit-category-message" class="info"></p>
+      <!-- Plantilla para vistas de categoría (se clona desde JS) -->
+      <div id="template-category-view" class="category-main-view hidden" data-category-template>
+        <div class="summary-card">
+          <span class="card-title category-specific-title"></span>
+          <span class="card-total-amount category-specific-total">0.00€</span>
         </div>
-    </div>
-
-    <div id="confirm-delete-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2>Confirmar Eliminación</h2>
-            <p id="confirm-delete-message">¿Estás seguro de que quieres eliminar este elemento?</p>
-            <div class="modal-actions">
-                <button id="confirm-delete-button" class="apple-button delete-button">Eliminar</button>
-                <button id="cancel-delete-button" class="apple-button-secondary">Cancelar</button>
-            </div>
+        <div class="add-expense-section">
+          <button class="apple-button full-width-button add-expense-category-button">Añadir Nuevo Gasto</button>
         </div>
+        <ul class="expense-list"></ul>
+        <p class="no-expenses hidden">No hay gastos en esta categoría aún.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Modales (agregados para asegurar que el script encuentre los elementos) ===== -->
+  <!-- Modal: Añadir / Editar Gasto -->
+  <div id="expense-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="expense-modal-title">Nuevo Gasto</h3>
+      <label>Monto</label>
+      <input id="modal-expense-amount" type="number" step="0.01">
+      <label>Descripción</label>
+      <input id="modal-expense-description" type="text">
+      <label>Fecha</label>
+      <input id="modal-expense-date" type="date">
+      <label>Categoría</label>
+      <select id="modal-expense-category-select"></select>
+      <p id="expense-modal-message" class="info"></p>
+      <div class="modal-actions">
+        <button id="confirm-expense-button" class="apple-button">Confirmar</button>
+        <button id="cancel-expense-button" class="apple-button-secondary">Cancelar</button>
+      </div>
     </div>
+  </div>
 
-    <div id="info-modal" class="modal hidden">
-        <div class="modal-content apple-card">
-            <h2>Información</h2>
-            <p id="info-text-content">
-                Spent es una aplicación creada por Diego para aprender programación, no tiene fines lucrativos.<br>
-                <br>
-                El administrador de la web no puede visualizar el contenido que los usuarios introducen en ella.<br>
-                Toda la información que el usuario introduce en la web se almacena de forma local y segura en el navegador de cada dispositivo.<br>
-                <br>
-                Para añadir la app-web a la pantalla de inicio en el iPhone seguir los pasos en estas dos fotos:<br>
-            </p>
-
-            <div class="info-images">
-                <img src="foto2.jpg" alt="Captura de pantalla 1">
-                <img src="foto1.jpg" alt="Captura de pantalla 2">
-            </div>
-            <div class="modal-actions">
-                <button id="close-info-button" class="apple-button apple-button-secondary">Cerrar</button>
-            </div>
-        </div>
+  <!-- Modal: Añadir Categoría -->
+  <div id="add-category-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Añadir Categoría</h3>
+      <input id="new-category-input" type="text" placeholder="Nombre de la categoría">
+      <p id="category-modal-message" class="info"></p>
+      <div class="modal-actions">
+        <button id="confirm-add-category" class="apple-button">Añadir</button>
+        <button id="cancel-add-category" class="apple-button-secondary">Cancelar</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Tu script principal -->
-    <script src="script.js"></script>
+  <!-- Modal: Editar Categoría -->
+  <div id="edit-category-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Editar Categoría</h3>
+      <input id="edit-category-input" type="text">
+      <p id="edit-category-message" class="info"></p>
+      <div class="modal-actions">
+        <button id="confirm-edit-category-button" class="apple-button">Guardar</button>
+        <button id="cancel-edit-category-button" class="apple-button-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmar Borrado -->
+  <div id="confirm-delete-modal" class="modal hidden">
+    <div class="modal-content">
+      <p id="confirm-delete-message"></p>
+      <div class="modal-actions">
+        <button id="confirm-delete-button" class="apple-button">Sí, eliminar</button>
+        <button id="cancel-delete-button" class="apple-button-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Info -->
+  <div id="info-modal" class="modal hidden">
+    <div class="modal-content">
+      <div id="info-text-content"></div>
+      <div class="modal-actions">
+        <button id="close-info-button" class="apple-button-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
