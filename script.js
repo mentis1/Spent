@@ -1,4 +1,4 @@
-// --- script.js (versión corregida) ---
+// --- script.js (versión corregida con solución al problema de pantalla en blanco) ---
 
 // Configuración de Firebase (mantén tus claves existentes)
 const firebaseConfig = {
@@ -106,10 +106,12 @@ function showMessage(element, message, type = 'info') {
 function generateId() {
     return '_' + Math.random().toString(36).substr(2, 9);
 }
+
 function formatAmount(amount) {
     const n = parseFloat(amount) || 0;
     return n.toFixed(2) + '€';
 }
+
 function formatDate(dateString) {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
@@ -309,6 +311,16 @@ function renderExpensesForSpecificCategoryView(categoryName) {
     });
 }
 
+// --- Función auxiliar para refrescar la UI manteniendo la pestaña activa ---
+function refreshUI() {
+    const currentActiveCategory = activeCategoryName; // Guardamos la categoría actual
+    renderCategoryTabs();
+    renderAllCategoryViews();
+    renderGeneralView();
+    activateTab(currentActiveCategory); // Reactivamos la misma categoría
+    updatePieChart();
+}
+
 // --- Cálculos ---
 function calculateTotalExpenses() {
     return expenses.reduce((total, exp) => total + parseFloat(exp.amount || 0), 0);
@@ -400,10 +412,7 @@ async function addNewCategory() {
     const newCategory = { id: generateId(), name: categoryName };
     categories.push(newCategory);
     await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
-    renderCategoryTabs();
-    renderGeneralView();
-    renderAllCategoryViews();
-    updatePieChart();
+    refreshUI(); // Usar refreshUI en lugar de renderizado individual
     showMessage(categoryModalMessage, `Categoría "${categoryName}" añadida.`, 'success');
     setTimeout(() => closeAddCategoryModal(), 800);
 }
@@ -443,12 +452,15 @@ async function confirmEditCategory() {
     const oldName = categoryToEdit.name;
     categoryToEdit.name = newName;
     expenses.forEach(exp => { if (exp.category === oldName) exp.category = newName; });
+    
+    // Si estamos editando la categoría actualmente activa, actualizamos la variable
+    if (activeCategoryName === oldName) {
+        activeCategoryName = newName;
+    }
+    
     await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
     await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-    renderCategoryTabs();
-    renderAllCategoryViews();
-    renderGeneralView();
-    updatePieChart();
+    refreshUI(); // Usar refreshUI en lugar de renderizado individual
     closeEditCategoryModal();
 }
 
@@ -520,9 +532,7 @@ async function handleConfirmExpense() {
     }
 
     await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-    renderGeneralView();
-    renderAllCategoryViews();
-    updatePieChart();
+    refreshUI(); // Usar refreshUI para mantener la pestaña activa
     closeExpenseModal();
 }
 
@@ -544,20 +554,21 @@ async function handleDeleteConfirm() {
     if (deleteActionType === 'expense') {
         expenses = expenses.filter(exp => exp.id !== deleteTargetId);
         await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
-        renderGeneralView();
-        renderAllCategoryViews();
-        updatePieChart();
+        refreshUI(); // Usar refreshUI para mantener la pestaña activa
     } else if (deleteActionType === 'category') {
         const categoryToDelete = categories.find(cat => cat.id === deleteTargetId);
         if (categoryToDelete) {
             expenses = expenses.filter(exp => exp.category !== categoryToDelete.name);
             categories = categories.filter(cat => cat.id !== deleteTargetId);
+            
+            // Si estamos eliminando la categoría actualmente activa, cambiar a General
+            if (activeCategoryName === categoryToDelete.name) {
+                activeCategoryName = 'General';
+            }
+            
             await saveToStorage(EXPENSES_STORAGE_KEY, expenses);
             await saveToStorage(CATEGORIES_STORAGE_KEY, categories);
-            renderGeneralView();
-            renderAllCategoryViews();
-            updatePieChart();
-            activateTab('General');
+            refreshUI(); // Usar refreshUI 
         }
     }
     closeConfirmDeleteModal();
