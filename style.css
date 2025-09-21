@@ -1363,7 +1363,12 @@ h2, h3 {
     font-weight: 600;
     color: var(--apple-text-dark);
 }
-
+.modal-content h4 {
+    margin-top: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--apple-text-dark);
+}
 .modal-content input, .modal-content select {
     width: 100%;
     padding: 12px;
@@ -1490,3 +1495,4 @@ h2, h3 {
 .fa-times:hover {
     color: var(--apple-text-dark);
 }
+```eof
