@@ -1476,3 +1476,17 @@ h2, h3 {
 /* -------------------------------------------------------------------------- */
 /* Nuevos estilos para el icono de cierre                             */
 /* -------------------------------------------------------------------------- */
+
+.fa-times {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: var(--apple-medium-gray);    
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.fa-times:hover {
+    color: var(--apple-text-dark);
+}
