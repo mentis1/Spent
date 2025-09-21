@@ -577,7 +577,7 @@ function exportDataToTextFile() {
 
 // --- Invitar / Info ---
 function invitarViaWhatsApp() {
-    const message = "¡Hola! Te invito a usar la app de gastos SpentApp. Es súper útil para llevar un registro de tus finanzas. Puedes descargar el código aquí: [enlace_a_tu_repositorio_o_pagina]";
+    const message = "¡Hola! Te invito a usar la app de gastos SpentApp. Es súper útil para llevar un registro de tus finanzas. Puedes descargar el código aquí: https://mentis1.github.io/Spent/";
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
 }
@@ -586,16 +586,8 @@ function openInfoModal() {
     const infoText = `
         <p><strong>SpentApp v1.0</strong></p>
         <p>Aplicación de gestión de gastos personales.</p>
-        <p>Desarrollada para un registro fácil y rápido de gastos por categoría.</p>
-        <p><strong>Características:</strong></p>
-        <ul>
-            <li>Registro de gastos por cantidad, descripción, fecha y categoría.</li>
-            <li>Creación y gestión de categorías personalizadas.</li>
-            <li>Vista general de todos los gastos y totales por categoría.</li>
-            <li>Gráfico de tarta para visualizar la distribución de los gastos.</li>
-            <li>Exportación de datos a un archivo de texto.</li>
-        </ul>
-        <p>Agradecimientos a todos los que contribuyeron al desarrollo de esta aplicación.</p>
+        <p>App web desarrollada por Diego para aprender programación</p>
+        <p><strong>Es una app sin ánimo de lucro</strong></p>
     `;
     if (infoTextContent) infoTextContent.innerHTML = infoText;
     if (infoModal) infoModal.classList.remove('hidden');
