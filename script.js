@@ -62,6 +62,7 @@ const templateCategoryView = document.getElementById('template-category-view');
 
 const expensesPieChartCanvas = document.getElementById('expensesPieChart');
 const noChartDataMessage = document.getElementById('no-chart-data-message');
+const monthlyExpensesList = document.getElementById('monthly-expenses-list');
 
 const expenseModal = document.getElementById('expense-modal');
 const expenseModalTitle = document.getElementById('expense-modal-title');
@@ -240,6 +241,7 @@ function renderGeneralView() {
             });
         });
     }
+    updateMonthlyExpenses();
     updatePieChart();
 }
 
@@ -382,6 +384,41 @@ function updatePieChart() {
     } catch (err) {
         console.error('updatePieChart error', err);
     }
+}
+// --- Gastos mensuales ---
+function updateMonthlyExpenses() {
+    if (!monthlyExpensesList) return;
+    
+    const monthlyTotals = {};
+    
+    expenses.forEach(exp => {
+        const date = new Date(exp.date);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + parseFloat(exp.amount || 0);
+    });
+    
+    const sortedMonths = Object.keys(monthlyTotals).sort().reverse();
+    
+    if (sortedMonths.length === 0) {
+        monthlyExpensesList.innerHTML = '<p class="no-expenses">No hay gastos registrados.</p>';
+        return;
+    }
+    
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    let html = '<div style="padding: 10px;">';
+    sortedMonths.forEach(monthKey => {
+        const [year, month] = monthKey.split('-');
+        const monthName = monthNames[parseInt(month) - 1];
+        const total = monthlyTotals[monthKey];
+        html += `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+            <span><strong>${monthName} ${year}</strong></span>
+            <span style="color: #0a7aff; font-weight: bold;">${formatAmount(total)}</span>
+        </div>`;
+    });
+    html += '</div>';
+    
+    monthlyExpensesList.innerHTML = html;
 }
 
 // --- Modales de Categoría ---
