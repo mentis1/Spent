@@ -22,63 +22,6 @@
     --logo-size-app: 2.8em;   /* Tamaño del logo en el encabezado de la app (más grande) */
 }
 
-/* -- Tema Oscuro -- */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --apple-blue: #2997ff; /* Un azul un poco más brillante para oscuro */
-        --apple-red: #ff453a; /* Rojo para oscuro */
-        --apple-orange: #ff9f0a; /* Naranja para oscuro */
-        --apple-light-gray-bg: #1c1c1e; /* Fondo oscuro casi negro */
-        --apple-medium-gray: #8e8e93; /* Gris medio claro para texto secundario */
-        --apple-card-background: #2c2c2e; /* Fondo de tarjetas más oscuro */
-        --apple-text-dark: #f2f2f7; /* Texto claro */
-        --apple-shadow-light: rgba(0, 0, 0, 0.3); /* Sombra sutil en oscuro */
-        --apple-shadow-medium: rgba(0, 0, 0, 0.4); /* Sombra para botones en oscuro */
-        --apple-shadow-strong: rgba(0, 0, 0, 0.5); /* Sombra para hover/active en oscuro */
-        --apple-blue-shadow: rgba(41, 151, 255, 0.4); /* Sombra azul para elementos activos en oscuro */
-
-        --apple-strong-shadow: rgba(0, 0, 0, 0.5);
-        --apple-subtle-shadow: rgba(0, 0, 0, 0.4);
-    }
-
-    /* Ajustes específicos para elementos que podrían necesitar un retoque en el modo oscuro */
-    .keypad-button {
-        box-shadow: 0 3px 10px var(--apple-shadow-medium); /* Asegura que la sombra se ajuste */
-    }
-
-    .keypad-button:active {
-        background-color: var(--apple-card-background); /* Mantener la consistencia con el fondo de tarjeta oscuro */
-        box-shadow: 0 2px 6px var(--apple-shadow-light);
-    }
-
-    /* Invertir colores de sombra para #Invitar y #Info para que sean visibles en fondo oscuro */
-    #Invitar {
-        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4); /* Sombra más oscura */
-    }
-
-    #Invitar:hover {
-        box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.6); /* Sombra más pronunciada para hover */
-    }
-
-    #Invitar:active {
-        box-shadow: var(--apple-shadow-strong); /* Sombra más sutil al hacer clic */
-    }
-
-    #Info {
-        background-color: var(--apple-card-background); /* Fondo de tarjeta oscuro */
-        color: var(--apple-text-dark); /* Texto claro */
-        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4); /* Sombra oscura */
-    }
-
-    #Info:hover {
-        box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.6); /* Sombra más pronunciada para hover */
-    }
-
-    #Info:active {
-        box-shadow: var(--apple-shadow-strong); /* Sombra más sutil al hacer clic */
-    }
-}
-
 /* Estilos Generales */
 body {
     font-family: -apple-system, BlinkMacMacFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -550,6 +493,11 @@ body {
     box-shadow: 0 6px 18px var(--apple-subtle-shadow); /* Stronger shadow */
 }
 
+.expense-item:hover {
+    box-shadow: 0 6px 18px var(--apple-strong-shadow); /* Stronger hover shadow */
+    transform: translateY(-3px); /* Slightly more pronounced transform */
+}
+
 .expense-item-details {
     flex-grow: 1;
     display: flex;
@@ -766,7 +714,7 @@ body {
 
     .app-header {
         padding: 20px 20px; /* Grande */
-    } /* Moved this closing brace to fix syntax error */
+    }
 
     .app-header h1 {
         font-size: 2.0em; /* Even larger font size */
@@ -1069,21 +1017,6 @@ body {
     --apple-subtle-shadow: rgba(0, 0, 0, 0.15);
 }
 
-/* Modo Oscuro (se activa con la preferencia del sistema) */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --apple-light-gray-bg: #1c1c1e; /* Fondo oscuro */
-        --apple-card-background: #2c2c2e; /* Fondo de tarjetas más oscuro */
-        --apple-text-dark: #ffffff; /* Texto claro */
-        --apple-medium-gray: #aeaeb2; /* Gris medio claro */
-        --apple-shadow-light: rgba(255, 255, 255, 0.1);
-        --apple-shadow-medium: rgba(255, 255, 255, 0.15);
-        --apple-shadow-strong: rgba(255, 255, 255, 0.25);
-        --apple-blue-shadow: rgba(68, 152, 255, 0.4);
-        --apple-strong-shadow: rgba(255, 255, 255, 0.3);
-        --apple-subtle-shadow: rgba(255, 255, 255, 0.15);
-    }
-}
 
 /* Estilos globales */
 * {
@@ -1495,4 +1428,3 @@ h2, h3 {
 .fa-times:hover {
     color: var(--apple-text-dark);
 }
-```eof
